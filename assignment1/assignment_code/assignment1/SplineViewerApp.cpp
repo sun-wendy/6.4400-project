@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include "gloo/external.hpp" // take in user inputs
 #include "gloo/cameras/ArcBallCameraNode.hpp"
 #include "gloo/lights/AmbientLight.hpp"
 #include "gloo/lights/PointLight.hpp"
@@ -12,12 +13,34 @@
 #include "Surface.hpp"
 #include "NURBSNode.hpp"
 
+
+namespace {
+const std::vector<std::string> kJointNames = {"Root",
+                                              "Chest",
+                                              "Waist",
+                                              "Neck",
+                                              "Right hip",
+                                              "Right leg",
+                                              "Right knee",
+                                              "Right foot",
+                                              "Left hip",
+                                              "Left leg",
+                                              "Left knee",
+                                              "Left foot",
+                                              "Right collarbone",
+                                              "Right shoulder",
+                                              "Right elbow",
+                                              "Left collarbone",
+                                              "Left shoulder",
+                                              "Left elbow"};
+}
+
 namespace GLOO {
 
 SplineViewerApp::SplineViewerApp(const std::string& app_name,
                                  glm::ivec2 window_size,
                                  const std::string& filename)
-    : Application(app_name, window_size), filename_(filename) {
+    : Application(app_name, window_size), filename_(filename), slider_values_(kJointNames.size(), 0.0f) {
 }
 
 void SplineViewerApp::SetupScene() {
@@ -56,10 +79,9 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   std::getline(fs, spline_type);
 
   SplineBasis spline_basis;
-  std::vector<glm::vec3> control_points;
   std::vector<float> knots;
   int degree;
-  std::vector<float> weights;
+  // std::vector<float> weights;
 
   std::string line;
   while (std::getline(fs, line)) {
@@ -72,7 +94,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
         float x, y, z, w;
         ss >> x >> y >> z >> w;
         control_points.push_back(glm::vec3(x, y, z));
-        weights.push_back(w);
+        weights_.push_back(w);
       }
     }
     if (line == "knots") {
@@ -102,8 +124,26 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   std::cout << "Degree: " << degree << std::endl;
 
   // Set up a NURBS node for the loaded file
-  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights, knots, NURBSBasis::NURBS);
+  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights_, knots, NURBSBasis::NURBS);
+  nurbs_node_ptr_ = nurbs_node.get();
   root.AddChild(std::move(nurbs_node));
+
+  void DrawGUI() {
+  bool modified = false;
+  ImGui::Begin("Control Panel");
+  for (size_t i = 0; i < control_points.size(); i++) {
+    ImGui::Text("Ctrl Pt %i", i);
+    ImGui::PushID((int)i);
+    modified |= ImGui::SliderFloat("Weight", &weights_[i], 0, 10);
+    ImGui::PopID();
+  }
+  ImGui::End();
+  if (modified) {
+    nurbs_node_ptr_->OnWeightChanged(weights_);
+      // std::cout << "1: " << slider_values_[0] << std::endl;
+    // skeletal_node_ptr_->OnJointChanged();
+  }
+}
 
   // std::string line;
   // for (size_t i = 0; std::getline(fs, line); i++) {
@@ -166,4 +206,22 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   //     root.AddChild(std::move(surface));
   // }
 }
+
+void SplineViewerApp::DrawGUI() {
+  bool modified = false;
+  ImGui::Begin("Control Panel");
+  for (size_t i = 0; i < control_points.size(); i++) {
+    ImGui::Text("Ctrl Pt %i", i);
+    ImGui::PushID((int)i);
+    modified |= ImGui::SliderFloat("Weight", &weights_[i], 0, 10);
+    ImGui::PopID();
+  }
+  ImGui::End();
+  if (modified) {
+    nurbs_node_ptr_->OnWeightChanged(weights_);
+      // std::cout << "1: " << slider_values_[0] << std::endl;
+    // skeletal_node_ptr_->OnJointChanged();
+  }
+}
 }  // namespace GLOO
+

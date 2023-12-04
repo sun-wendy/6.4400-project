@@ -20,6 +20,7 @@ struct NURBSPoint {
 class NURBSNode : public SceneNode {
  public:
     NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knots, NURBSBasis spline_basis);
+    void OnWeightChanged(std::vector<float> new_weights);
     // void Update(double delta_time) override;
 
  private:
