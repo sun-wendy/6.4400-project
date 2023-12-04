@@ -46,9 +46,6 @@ void SplineViewerApp::SetupScene() {
 }
 
 void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
-
-  std::cout << "Loading file " + filename + "..." << std::endl;
-  
   std::fstream fs(GetAssetDir() + filename);
   if (!fs) {
     std::cerr << "ERROR: Unable to open file " + filename + "!" << std::endl;
@@ -62,9 +59,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   std::vector<glm::vec3> control_points;
   std::vector<float> knots;
   int degree;
-  // The lines between "control points" line and "knots" line are control points
-  // The lines between "knots" line and "degree" line are knots
-  // The line after "degree" line is degree
+
   std::string line;
   while (std::getline(fs, line)) {
     if (line == "control points") {
@@ -77,24 +72,23 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
         ss >> x >> y >> z;
         control_points.push_back(glm::vec3(x, y, z));
       }
-    } else if (line == "knots") {
-      while (std::getline(fs, line)) {
-        if (line == "degree") {
-          break;
-        }
-        std::stringstream ss(line);
-        float knot;
-        ss >> knot;
+    }
+    if (line == "knots") {
+      std::getline(fs, line);
+      std::stringstream ss(line);
+      float knot;
+      while (ss >> knot) {
         knots.push_back(knot);
       }
-    } else if (line == "degree") {
+    }
+    if (line == "degree") {
       std::getline(fs, line);
       std::stringstream ss(line);
       ss >> degree;
     }
   }
 
-  // Print out control points, knots, and degree
+  // For debugging
   std::cout << "Control points: " << std::endl;
   for (size_t i = 0; i < control_points.size(); i++) {
     std::cout << control_points[i].x << " " << control_points[i].y << " " << control_points[i].z << std::endl;
@@ -104,6 +98,10 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
     std::cout << knots[i] << std::endl;
   }
   std::cout << "Degree: " << degree << std::endl;
+
+  // Set up a NURBS node for the loaded file
+  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, knots, NURBSBasis::NURBS);
+  root.AddChild(std::move(nurbs_node));
 
   // std::string line;
   // for (size_t i = 0; std::getline(fs, line); i++) {
@@ -122,7 +120,6 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   //   std::cerr << "ERROR: Spline basis type invalid" << std::endl;
   //   return;
   // }
-
 
   // TODO: set up patch or curve nodes here.
   // The first line of the user-specified file is spline_type, and the specified

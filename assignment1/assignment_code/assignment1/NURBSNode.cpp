@@ -32,20 +32,8 @@ NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vec
 
 std::vector<float> NURBSNode::CalcBasisFunc(float t) {
     std::vector<float> basis_func(control_pts_.size());
+
     
-    // Initialize basis functions for the first knot span
-    for (int i = 0; i <= degree_; i++) {
-        basis_func[i] = (t - knots_[i]) / (knots_[i+degree_] - knots_[i]);
-    }
-
-    // Recursively calculate basis functions for the remaining knot spans
-    for (int i = degree_ + 1; i < control_pts_.size(); i++) {
-        for (int j = 0; j <= i - degree_ - 1; j++) {
-            basis_func[i] = (t - knots_[i]) / (knots_[i+degree_] - knots_[i]) * basis_func[i-1] + (knots_[i+1] - t) / (knots_[i+1] - knots_[i-degree_+1]) * basis_func[i-degree_];
-        }
-    }
-
-    return basis_func;
 }
 
 NURBSPoint NURBSNode::EvalCurve(float t) {
@@ -54,6 +42,7 @@ NURBSPoint NURBSNode::EvalCurve(float t) {
     curve_point.T = glm::vec3(0.0f);
 
     std::vector<float> basis_func = CalcBasisFunc(t);
+    std::cout << basis_func[2] << std::endl;
 
     for (int i = 0; i < control_pts_.size(); i++) {
         curve_point.P += basis_func[i] * control_pts_[i];
