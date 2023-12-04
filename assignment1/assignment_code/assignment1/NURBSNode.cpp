@@ -9,11 +9,12 @@
 #include "gloo/InputManager.hpp"
 
 namespace GLOO {
-NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> knots, NURBSBasis spline_basis) {
+NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knots, NURBSBasis spline_basis) {
     degree_ = degree;
     control_pts_ = control_points;
     knots_ = knots;
     spline_basis_ = spline_basis;
+    weights_ = weights;
 
     // Initialize the VertexObjects and shaders used to render the control points,
     // the curve, and the tangent line.
@@ -93,12 +94,18 @@ NURBSPoint NURBSNode::EvalCurve(float t) {
     
     curve_point.P = glm::vec3(0.0f);
     curve_point.T = glm::vec3(0.0f);
+    float rationalWeight = 0.0;
+
+    for (int i = 0; i < control_pts_.size(); i++){
+        float temp = CalcNip(i, t) * weights_[i];
+        rationalWeight += temp;
+    }
 
     for (int i = 0; i < control_pts_.size(); i++){
         float temp = CalcNip(i, t);
-        curve_point.P.x += control_pts_[i].x * temp;
-        curve_point.P.y += control_pts_[i].y * temp;
-        curve_point.P.z += control_pts_[i].z * temp;
+        curve_point.P.x += control_pts_[i].x * weights_[i] * temp/rationalWeight;
+        curve_point.P.y += control_pts_[i].y * weights_[i] * temp/rationalWeight;
+        curve_point.P.z += control_pts_[i].z * weights_[i] * temp/rationalWeight;
     }
 
     return curve_point;

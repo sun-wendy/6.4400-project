@@ -59,6 +59,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   std::vector<glm::vec3> control_points;
   std::vector<float> knots;
   int degree;
+  std::vector<float> weights;
 
   std::string line;
   while (std::getline(fs, line)) {
@@ -68,9 +69,10 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
           break;
         }
         std::stringstream ss(line);
-        float x, y, z;
-        ss >> x >> y >> z;
+        float x, y, z, w;
+        ss >> x >> y >> z >> w;
         control_points.push_back(glm::vec3(x, y, z));
+        weights.push_back(w);
       }
     }
     if (line == "knots") {
@@ -100,7 +102,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   std::cout << "Degree: " << degree << std::endl;
 
   // Set up a NURBS node for the loaded file
-  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, knots, NURBSBasis::NURBS);
+  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights, knots, NURBSBasis::NURBS);
   root.AddChild(std::move(nurbs_node));
 
   // std::string line;

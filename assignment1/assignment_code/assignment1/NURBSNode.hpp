@@ -19,7 +19,7 @@ struct NURBSPoint {
 
 class NURBSNode : public SceneNode {
  public:
-    NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> knots, NURBSBasis spline_basis);
+    NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knots, NURBSBasis spline_basis);
     // void Update(double delta_time) override;
 
  private:
@@ -34,6 +34,7 @@ class NURBSNode : public SceneNode {
     std::vector<float> knots_;
     NURBSBasis spline_basis_;
     int degree_;
+    std::vector<float> weights_;
 
     std::shared_ptr<VertexObject> sphere_mesh_;
     std::shared_ptr<VertexObject> curve_polyline_;
