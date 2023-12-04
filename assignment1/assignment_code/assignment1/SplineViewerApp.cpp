@@ -14,33 +14,12 @@
 #include "NURBSNode.hpp"
 
 
-namespace {
-const std::vector<std::string> kJointNames = {"Root",
-                                              "Chest",
-                                              "Waist",
-                                              "Neck",
-                                              "Right hip",
-                                              "Right leg",
-                                              "Right knee",
-                                              "Right foot",
-                                              "Left hip",
-                                              "Left leg",
-                                              "Left knee",
-                                              "Left foot",
-                                              "Right collarbone",
-                                              "Right shoulder",
-                                              "Right elbow",
-                                              "Left collarbone",
-                                              "Left shoulder",
-                                              "Left elbow"};
-}
-
 namespace GLOO {
 
 SplineViewerApp::SplineViewerApp(const std::string& app_name,
                                  glm::ivec2 window_size,
                                  const std::string& filename)
-    : Application(app_name, window_size), filename_(filename), slider_values_(kJointNames.size(), 0.0f) {
+    : Application(app_name, window_size), filename_(filename), slider_values_(10, 0.0f) {
 }
 
 void SplineViewerApp::SetupScene() {

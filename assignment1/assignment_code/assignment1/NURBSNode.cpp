@@ -26,7 +26,7 @@ NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vec
 
     control_point_nodes_ = std::vector<SceneNode*>();
 
-    InitCurve();
+    InitCurveAndControlPoints();
     PlotControlPoints();
 }
 
@@ -105,8 +105,8 @@ NURBSPoint NURBSNode::EvalCurve(float t) { // evaluates the curve at time t. In 
     return curve_point;
 }
 
-void NURBSNode::InitCurve() {
-    // initializes curve
+void NURBSNode::InitCurveAndControlPoints() {
+    // initialize curve
     float start = knots_[degree_];
     float end = knots_[knots_.size()-degree_-1];
     float interval_length = end-start;
@@ -137,11 +137,29 @@ void NURBSNode::InitCurve() {
     polyline_node->CreateComponent<MaterialComponent>(material);
 
     AddChild(std::move(polyline_node));
+
+    // initialize control points
+    for (int i = 0; i < control_pts_.size(); i++) {
+        auto point_node = make_unique<SceneNode>();
+        point_node->GetTransform().SetPosition(control_pts_[i]);
+
+        point_node->CreateComponent<ShadingComponent>(shader_);
+        
+        auto& rc = point_node->CreateComponent<RenderingComponent>(sphere_mesh_);
+        rc.SetDrawMode(DrawMode::Triangles);
+
+        glm::vec3 color(1.f, 0.f, 0);
+        auto material = std::make_shared<Material>(color, color, color, 0);
+        point_node->CreateComponent<MaterialComponent>(material);
+
+        control_point_nodes_.push_back(point_node.get());
+        AddChild(std::move(point_node));
+    }
 }
 
 
 void NURBSNode::PlotCurve() {
-    // updates the curve
+    // Call to update the curve
     float start = knots_[degree_];
     float end = knots_[knots_.size()-degree_-1];
     float interval_length = end-start;
@@ -164,22 +182,47 @@ void NURBSNode::PlotCurve() {
 
 void NURBSNode::PlotControlPoints() {
     for (int i = 0; i < control_pts_.size(); i++) {
-        auto point_node = make_unique<SceneNode>();
-        point_node->GetTransform().SetPosition(control_pts_[i]);
-
-        point_node->CreateComponent<ShadingComponent>(shader_);
-        
-        auto& rc = point_node->CreateComponent<RenderingComponent>(sphere_mesh_);
-        rc.SetDrawMode(DrawMode::Triangles);
-
-        glm::vec3 color(1.f, 0.f, 0);
-        auto material = std::make_shared<Material>(color, color, color, 0);
-        point_node->CreateComponent<MaterialComponent>(material);
-
-        control_point_nodes_.push_back(point_node.get());
-        AddChild(std::move(point_node));
+        control_point_nodes_[i]->GetTransform().SetPosition(control_pts_[i]);
     }
 }
+
+void NURBSNode::Update(double delta_time) {
+
+  // Prevent multiple toggle.
+  static bool prev_released = true;
+  if (InputManager::GetInstance().IsKeyPressed('W')) {
+    // if (prev_released) { // Interpret the control points as the other basis
+        control_pts_[0].y += 0.05;
+        PlotControlPoints();
+        PlotCurve();
+    // }
+    prev_released = false;
+  } else if (InputManager::GetInstance().IsKeyPressed('A')) {
+    // if (prev_released) {
+        control_pts_[0].x -= 0.05;
+        PlotControlPoints();
+        PlotCurve();
+    // }
+    prev_released = false;
+  } else if (InputManager::GetInstance().IsKeyPressed('S')) {
+    // if (prev_released) {
+        control_pts_[0].y -= 0.05;
+        PlotControlPoints();
+        PlotCurve();
+    // }
+    prev_released = false;
+  } else if (InputManager::GetInstance().IsKeyPressed('D')) {
+    // if (prev_released) {
+        control_pts_[0].x += 0.05;
+        PlotControlPoints();
+        PlotCurve();
+    // }
+    prev_released = false;
+  }else {
+    prev_released = true;
+  }
+}
+
 
 
 void NURBSNode::OnWeightChanged(std::vector<float> new_weights){
