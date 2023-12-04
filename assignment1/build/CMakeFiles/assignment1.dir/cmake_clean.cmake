@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.o"
   "CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.o.d"
+  "CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o"
+  "CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o.d"
   "CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o"
   "CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o.d"
   "CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o"

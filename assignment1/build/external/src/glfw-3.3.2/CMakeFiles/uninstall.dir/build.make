@@ -53,10 +53,10 @@ RM = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/wendysun/Desktop/computer-graphics/assignment1
+CMAKE_SOURCE_DIR = /Users/wendysun/Desktop/6.4400-project/assignment1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/wendysun/Desktop/computer-graphics/assignment1/build
+CMAKE_BINARY_DIR = /Users/wendysun/Desktop/6.4400-project/assignment1/build
 
 # Utility rule file for uninstall.
 
@@ -67,7 +67,7 @@ include external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/compiler_depend.make
 include external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/progress.make
 
 external/src/glfw-3.3.2/CMakeFiles/uninstall:
-	cd /Users/wendysun/Desktop/computer-graphics/assignment1/build/external/src/glfw-3.3.2 && /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -P /Users/wendysun/Desktop/computer-graphics/assignment1/build/external/src/glfw-3.3.2/cmake_uninstall.cmake
+	cd /Users/wendysun/Desktop/6.4400-project/assignment1/build/external/src/glfw-3.3.2 && /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -P /Users/wendysun/Desktop/6.4400-project/assignment1/build/external/src/glfw-3.3.2/cmake_uninstall.cmake
 
 uninstall: external/src/glfw-3.3.2/CMakeFiles/uninstall
 uninstall: external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/build.make
@@ -78,10 +78,10 @@ external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/build: uninstall
 .PHONY : external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/build
 
 external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/clean:
-	cd /Users/wendysun/Desktop/computer-graphics/assignment1/build/external/src/glfw-3.3.2 && $(CMAKE_COMMAND) -P CMakeFiles/uninstall.dir/cmake_clean.cmake
+	cd /Users/wendysun/Desktop/6.4400-project/assignment1/build/external/src/glfw-3.3.2 && $(CMAKE_COMMAND) -P CMakeFiles/uninstall.dir/cmake_clean.cmake
 .PHONY : external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/clean
 
 external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/depend:
-	cd /Users/wendysun/Desktop/computer-graphics/assignment1/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/wendysun/Desktop/computer-graphics/assignment1 /Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glfw-3.3.2 /Users/wendysun/Desktop/computer-graphics/assignment1/build /Users/wendysun/Desktop/computer-graphics/assignment1/build/external/src/glfw-3.3.2 /Users/wendysun/Desktop/computer-graphics/assignment1/build/external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /Users/wendysun/Desktop/6.4400-project/assignment1/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/wendysun/Desktop/6.4400-project/assignment1 /Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glfw-3.3.2 /Users/wendysun/Desktop/6.4400-project/assignment1/build /Users/wendysun/Desktop/6.4400-project/assignment1/build/external/src/glfw-3.3.2 /Users/wendysun/Desktop/6.4400-project/assignment1/build/external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : external/src/glfw-3.3.2/CMakeFiles/uninstall.dir/depend
 

@@ -4,11 +4,11 @@
 # compile C with /Library/Developer/CommandLineTools/usr/bin/cc
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glfw-3.3.2/include -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glfw-3.3.2/src -I/Users/wendysun/Desktop/computer-graphics/assignment1/build/external/src/glfw-3.3.2/src
+C_INCLUDES = -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glfw-3.3.2/include -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glfw-3.3.2/src -I/Users/wendysun/Desktop/6.4400-project/assignment1/build/external/src/glfw-3.3.2/src
 
-C_FLAGSarm64 = -O3 -DNDEBUG -std=gnu99 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fPIC -Wall
+C_FLAGSarm64 = -O3 -DNDEBUG -std=gnu99 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -fPIC -Wall
 
-C_FLAGS = -O3 -DNDEBUG -std=gnu99 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -fPIC -Wall
+C_FLAGS = -O3 -DNDEBUG -std=gnu99 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -fPIC -Wall
 
 # Custom flags: external/src/glfw-3.3.2/src/CMakeFiles/glfw.dir/context.c.o_FLAGS = -Wdeclaration-after-statement
 

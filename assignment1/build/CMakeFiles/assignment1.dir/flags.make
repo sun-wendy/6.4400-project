@@ -5,17 +5,17 @@
 # compile CXX with /Library/Developer/CommandLineTools/usr/bin/c++
 C_DEFINES = 
 
-C_INCLUDES = -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glad/include -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/imgui -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/imgui/examples -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/stb -I/Users/wendysun/Desktop/computer-graphics/assignment1 -I/Users/wendysun/Desktop/computer-graphics/assignment1/assignment_code/assignment1 -I/Users/wendysun/Desktop/computer-graphics/assignment1/assignment_code/common -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glfw-3.3.2/include -isystem /Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glm-0.9.9.8
+C_INCLUDES = -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glad/include -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/imgui -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/imgui/examples -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/stb -I/Users/wendysun/Desktop/6.4400-project/assignment1 -I/Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1 -I/Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/common -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glfw-3.3.2/include -isystem /Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glm-0.9.9.8
 
-C_FLAGSarm64 = -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -Wall
+C_FLAGSarm64 = -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -Wall
 
-C_FLAGS = -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -Wall
+C_FLAGS = -O3 -DNDEBUG -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -Wall
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glad/include -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/imgui -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/imgui/examples -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/stb -I/Users/wendysun/Desktop/computer-graphics/assignment1 -I/Users/wendysun/Desktop/computer-graphics/assignment1/assignment_code/assignment1 -I/Users/wendysun/Desktop/computer-graphics/assignment1/assignment_code/common -I/Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glfw-3.3.2/include -isystem /Users/wendysun/Desktop/computer-graphics/assignment1/external/src/glm-0.9.9.8
+CXX_INCLUDES = -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glad/include -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/imgui -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/imgui/examples -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/stb -I/Users/wendysun/Desktop/6.4400-project/assignment1 -I/Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1 -I/Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/common -I/Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glfw-3.3.2/include -isystem /Users/wendysun/Desktop/6.4400-project/assignment1/external/src/glm-0.9.9.8
 
-CXX_FLAGSarm64 =  -DIMGUI_IMPL_OPENGL_LOADER_GLAD -O3 -DNDEBUG -O3 -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -Wall
+CXX_FLAGSarm64 =  -DIMGUI_IMPL_OPENGL_LOADER_GLAD -O3 -DNDEBUG -O3 -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -Wall
 
-CXX_FLAGS =  -DIMGUI_IMPL_OPENGL_LOADER_GLAD -O3 -DNDEBUG -O3 -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -Wall
+CXX_FLAGS =  -DIMGUI_IMPL_OPENGL_LOADER_GLAD -O3 -DNDEBUG -O3 -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -Wall
 
