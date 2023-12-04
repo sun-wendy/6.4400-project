@@ -105,9 +105,12 @@ NURBSPoint NURBSNode::EvalCurve(float t) {
 }
 
 void NURBSNode::InitCurve() {
+    float start = knots_[degree_];
+    float end = knots_[knots_.size()-degree_-1];
+    float interval_length = end-start;
     auto positions = make_unique<PositionArray>();
     for (int i = 0; i < N_SUBDIV_; i++) {
-        float t = (float)i / (N_SUBDIV_ - 1);
+        float t = ((float)i / (N_SUBDIV_ - 1)) * interval_length + start;
         NURBSPoint curve_point = EvalCurve(t);
         positions->push_back(curve_point.P);
     }
