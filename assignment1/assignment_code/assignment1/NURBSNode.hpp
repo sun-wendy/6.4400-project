@@ -28,7 +28,7 @@ class NURBSNode : public SceneNode {
     void PlotCurve();
     void PlotControlPoints();
     void PlotTangentLine();
-    std::vector<float> CalcBasisFunc(float t);
+    float CalcNip(int control_point_i, float time_u);
     
     std::vector<glm::vec3> control_pts_;
     std::vector<float> knots_;

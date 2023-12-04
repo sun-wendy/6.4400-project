@@ -30,34 +30,75 @@ NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vec
     // PlotTangentLine();
 }
 
-std::vector<float> NURBSNode::CalcBasisFunc(float t) {
-    std::vector<float> basis_func(control_pts_.size());
+float NURBSNode::CalcNip(int control_point_i, float time_u){
+    int i = control_point_i;
+    int p = degree_;
+    std::vector<float> U = knots_;
+    float u = time_u;
+
+    std::vector<float> N(p + 1);
+    float saved;
+    float temp;
+
+    int m = U.size() - 1;
+    if ((i == 0 && u == U[0]) || (i == (m - p - 1) && u == U[m])){
+        return 1.0;
+    }
     
-    // Initialize basis functions for the first knot span
-    for (int i = 0; i <= degree_; i++) {
-        basis_func[i] = (t - knots_[i]) / (knots_[i+degree_] - knots_[i]);
+
+    if (u < U[i] || u >= U[i + p + 1]){
+        return 0.0;
     }
 
-    // Recursively calculate basis functions for the remaining knot spans
-    for (int i = degree_ + 1; i < control_pts_.size(); i++) {
-        for (int j = 0; j <= i - degree_ - 1; j++) {
-            basis_func[i] = (t - knots_[i]) / (knots_[i+degree_] - knots_[i]) * basis_func[i-1] + (knots_[i+1] - t) / (knots_[i+1] - knots_[i-degree_+1]) * basis_func[i-degree_];
+    for (int j = 0; j <= p; j++)
+    {
+        if (u >= U[i + j] && u < U[i + j + 1])
+            N[j] = 1.0;
+        else
+            N[j] = 0.0;
+    }
+
+    for (int k = 1; k <= p; k++)
+    {
+        if (N[0] == 0)
+            saved = 0.0;
+        else
+            saved = ((u - U[i]) * N[0]) / (U[i + k] - U[i]);
+
+        for (int j = 0; j < p - k + 1; j++)
+        {
+            float Uleft = U[i + j + 1];
+            float Uright = U[i + j + k + 1];
+
+            if (N[j + 1] == 0)
+            {
+                N[j] = saved;
+                saved = 0.0;
+            }
+            else
+            {
+                temp = N[j + 1] / (Uright - Uleft);
+                N[j] = saved + (Uright - u) * temp;
+                saved = (u - Uleft) * temp;
+            }
         }
     }
-
-    return basis_func;
+    return N[0];
 }
+
 
 NURBSPoint NURBSNode::EvalCurve(float t) {
     NURBSPoint curve_point;
+    // CalcNip(int control_point_i, float time_u)
+    
     curve_point.P = glm::vec3(0.0f);
     curve_point.T = glm::vec3(0.0f);
 
-    std::vector<float> basis_func = CalcBasisFunc(t);
-
-    for (int i = 0; i < control_pts_.size(); i++) {
-        curve_point.P += basis_func[i] * control_pts_[i];
-        curve_point.T += basis_func[i] * control_pts_[i];
+    for (int i = 0; i < control_pts_.size(); i++){
+        float temp = CalcNip(i, t);
+        curve_point.P.x += control_pts_[i].x * temp;
+        curve_point.P.y += control_pts_[i].y * temp;
+        curve_point.P.z += control_pts_[i].z * temp;
     }
 
     return curve_point;
