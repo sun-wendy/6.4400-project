@@ -57,10 +57,10 @@ RM = /opt/homebrew/Cellar/cmake/3.27.4/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/wendysun/Desktop/computer-graphics/assignment1
+CMAKE_SOURCE_DIR = "/Users/lianexu/Dropbox (MIT)/6.4400 Computer Graphics/6.4400-project/assignment1"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/wendysun/Desktop/computer-graphics/assignment1/build
+CMAKE_BINARY_DIR = "/Users/lianexu/Dropbox (MIT)/6.4400 Computer Graphics/6.4400-project/assignment1/build"
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,9 +132,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/wendysun/Desktop/computer-graphics/assignment1/build/CMakeFiles /Users/wendysun/Desktop/computer-graphics/assignment1/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/lianexu/Dropbox (MIT)/6.4400 Computer Graphics/6.4400-project/assignment1/build/CMakeFiles" "/Users/lianexu/Dropbox (MIT)/6.4400 Computer Graphics/6.4400-project/assignment1/build//CMakeFiles/progress.marks"
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/wendysun/Desktop/computer-graphics/assignment1/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/lianexu/Dropbox (MIT)/6.4400 Computer Graphics/6.4400-project/assignment1/build/CMakeFiles" 0
 .PHONY : all
 
 # The main clean target
@@ -223,6 +223,30 @@ assignment_code/assignment1/CurveNode.s: assignment_code/assignment1/CurveNode.c
 assignment_code/assignment1/CurveNode.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.s
 .PHONY : assignment_code/assignment1/CurveNode.cpp.s
+
+assignment_code/assignment1/NurbsNode.o: assignment_code/assignment1/NurbsNode.cpp.o
+.PHONY : assignment_code/assignment1/NurbsNode.o
+
+# target to build an object file
+assignment_code/assignment1/NurbsNode.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NurbsNode.cpp.o
+.PHONY : assignment_code/assignment1/NurbsNode.cpp.o
+
+assignment_code/assignment1/NurbsNode.i: assignment_code/assignment1/NurbsNode.cpp.i
+.PHONY : assignment_code/assignment1/NurbsNode.i
+
+# target to preprocess a source file
+assignment_code/assignment1/NurbsNode.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NurbsNode.cpp.i
+.PHONY : assignment_code/assignment1/NurbsNode.cpp.i
+
+assignment_code/assignment1/NurbsNode.s: assignment_code/assignment1/NurbsNode.cpp.s
+.PHONY : assignment_code/assignment1/NurbsNode.s
+
+# target to generate assembly for a file
+assignment_code/assignment1/NurbsNode.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NurbsNode.cpp.s
+.PHONY : assignment_code/assignment1/NurbsNode.cpp.s
 
 assignment_code/assignment1/PatchNode.o: assignment_code/assignment1/PatchNode.cpp.o
 .PHONY : assignment_code/assignment1/PatchNode.o
@@ -1130,6 +1154,9 @@ help:
 	@echo "... assignment_code/assignment1/CurveNode.o"
 	@echo "... assignment_code/assignment1/CurveNode.i"
 	@echo "... assignment_code/assignment1/CurveNode.s"
+	@echo "... assignment_code/assignment1/NurbsNode.o"
+	@echo "... assignment_code/assignment1/NurbsNode.i"
+	@echo "... assignment_code/assignment1/NurbsNode.s"
 	@echo "... assignment_code/assignment1/PatchNode.o"
 	@echo "... assignment_code/assignment1/PatchNode.i"
 	@echo "... assignment_code/assignment1/PatchNode.s"
