@@ -21,6 +21,8 @@ protected:
   std::vector<float> weights_;
   std::vector<glm::vec3> control_points;
   NURBSNode* nurbs_node_ptr_;
+  int selected_control_pt = 0;
+  int u8_v = 0;
 
   std::string filename_;
 };

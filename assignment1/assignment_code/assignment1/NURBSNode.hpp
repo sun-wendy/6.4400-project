@@ -21,6 +21,7 @@ class NURBSNode : public SceneNode {
  public:
     NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knots, NURBSBasis spline_basis);
     void OnWeightChanged(std::vector<float> new_weights);
+    void ChangeSelectedControlPoint(int new_selected_control_point);
     void Update(double delta_time) override;
 
  private:
@@ -44,6 +45,7 @@ class NURBSNode : public SceneNode {
     std::shared_ptr<ShaderProgram> shader_;
     std::shared_ptr<ShaderProgram> polyline_shader_;
     std::vector<SceneNode*> control_point_nodes_;
+    int selected_control_point_;
 
     const int N_SUBDIV_ = 50;
 };

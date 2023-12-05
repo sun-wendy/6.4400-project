@@ -18,13 +18,14 @@ NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vec
 
     // Initialize the VertexObjects and shaders used to render the control points,
     // the curve, and the tangent line.
-    sphere_mesh_ = PrimitiveFactory::CreateSphere(0.05f, 25, 25);
+    sphere_mesh_ = PrimitiveFactory::CreateSphere(0.15f, 25, 25);
     curve_polyline_ = std::make_shared<VertexObject>();
     tangent_line_ = std::make_shared<VertexObject>();
     shader_ = std::make_shared<PhongShader>();
     polyline_shader_ = std::make_shared<SimpleShader>();
 
     control_point_nodes_ = std::vector<SceneNode*>();
+    selected_control_point_ = 0;
 
     InitCurveAndControlPoints();
     PlotControlPoints();
@@ -155,6 +156,7 @@ void NURBSNode::InitCurveAndControlPoints() {
         control_point_nodes_.push_back(point_node.get());
         AddChild(std::move(point_node));
     }
+    ChangeSelectedControlPoint(0);
 }
 
 
@@ -192,28 +194,28 @@ void NURBSNode::Update(double delta_time) {
   static bool prev_released = true;
   if (InputManager::GetInstance().IsKeyPressed('W')) {
     // if (prev_released) { // Interpret the control points as the other basis
-        control_pts_[0].y += 0.05;
+        control_pts_[selected_control_point_].y += 0.05;
         PlotControlPoints();
         PlotCurve();
     // }
     prev_released = false;
   } else if (InputManager::GetInstance().IsKeyPressed('A')) {
     // if (prev_released) {
-        control_pts_[0].x -= 0.05;
+        control_pts_[selected_control_point_].x -= 0.05;
         PlotControlPoints();
         PlotCurve();
     // }
     prev_released = false;
   } else if (InputManager::GetInstance().IsKeyPressed('S')) {
     // if (prev_released) {
-        control_pts_[0].y -= 0.05;
+        control_pts_[selected_control_point_].y -= 0.05;
         PlotControlPoints();
         PlotCurve();
     // }
     prev_released = false;
   } else if (InputManager::GetInstance().IsKeyPressed('D')) {
     // if (prev_released) {
-        control_pts_[0].x += 0.05;
+        control_pts_[selected_control_point_].x += 0.05;
         PlotControlPoints();
         PlotCurve();
     // }
@@ -223,7 +225,20 @@ void NURBSNode::Update(double delta_time) {
   }
 }
 
+void NURBSNode::ChangeSelectedControlPoint(int new_selected_control_point){
+    Material& material = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+    glm::vec3 green_color(0.f, 1.f, 0.f); // green
+    glm::vec3 red_color(1.f, 0.f, 0.f); // red
+    material.SetAmbientColor(red_color);
+    material.SetDiffuseColor(red_color);
+    material.SetSpecularColor(red_color);
 
+    selected_control_point_ = new_selected_control_point;
+    Material& material2 = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+    material2.SetAmbientColor(green_color);
+    material2.SetDiffuseColor(green_color);
+    material2.SetSpecularColor(green_color);
+}
 
 void NURBSNode::OnWeightChanged(std::vector<float> new_weights){
     weights_ = new_weights;

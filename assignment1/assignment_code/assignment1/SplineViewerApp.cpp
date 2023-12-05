@@ -110,6 +110,9 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
 
 void SplineViewerApp::DrawGUI() {
   bool modified = false;
+  bool change_control_pt_selection = false;
+  int u8_one = 1;
+
   ImGui::Begin("Control Panel");
   for (size_t i = 0; i < control_points.size(); i++) {
     ImGui::Text("Ctrl Pt %i", i);
@@ -117,11 +120,23 @@ void SplineViewerApp::DrawGUI() {
     modified |= ImGui::SliderFloat("Weight", &weights_[i], 0, 10);
     ImGui::PopID();
   }
+  ImGui::Text("Selected control point");
+  ImGui::PushID((int)control_points.size());
+  change_control_pt_selection |= ImGui::SliderInt("Selected point", &selected_control_pt, 0, control_points.size()-1);
+  ImGui::PopID();
+
+  ImGui::SmallButton("Insert Circle");
+  ImGui::InputScalar("input u8",      ImGuiDataType_U8,     &u8_v, (int)1 ? &u8_one  : NULL, "%u");
+
   ImGui::End();
   if (modified) {
     nurbs_node_ptr_->OnWeightChanged(weights_);
       // std::cout << "1: " << slider_values_[0] << std::endl;
     // skeletal_node_ptr_->OnJointChanged();
+  }
+  if (change_control_pt_selection){
+    nurbs_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);
+    std::cout << "here1" << std::endl;
   }
 }
 }  // namespace GLOO
