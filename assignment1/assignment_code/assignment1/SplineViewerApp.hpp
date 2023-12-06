@@ -3,6 +3,7 @@
 
 #include "gloo/Application.hpp"
 #include "NURBSNode.hpp"
+#include "NURBSCircle.hpp"
 
 namespace GLOO {
 class SplineViewerApp : public Application {
@@ -21,8 +22,11 @@ protected:
   std::vector<float> weights_;
   std::vector<glm::vec3> control_points;
   NURBSNode* nurbs_node_ptr_;
+  std::vector<NURBSCircle*> nurbs_circle_ptrs_;
   int selected_control_pt = 0;
-  int u8_v = 0;
+  int selected_circle = -1;
+  float circle_settings_[4] = { 1.0, 0.0, 0.0, 0.0 };
+  // int u8_v = 0;
 
   std::string filename_;
 };

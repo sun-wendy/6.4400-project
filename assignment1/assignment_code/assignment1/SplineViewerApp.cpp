@@ -12,6 +12,7 @@
 #include "PatchNode.hpp"
 #include "Surface.hpp"
 #include "NURBSNode.hpp"
+#include "NURBSCircle.hpp"
 
 
 namespace GLOO {
@@ -103,7 +104,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   std::cout << "Degree: " << degree << std::endl;
 
   // Set up a NURBS node for the loaded file
-  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights_, knots, NURBSBasis::NURBS);
+  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights_, knots, NURBSBasis::NURBS, 'R', true);
   nurbs_node_ptr_ = nurbs_node.get();
   root.AddChild(std::move(nurbs_node));
 }
@@ -111,23 +112,39 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
 void SplineViewerApp::DrawGUI() {
   bool modified = false;
   bool change_control_pt_selection = false;
+  bool button_pushed = false;
+  bool change_circle_selection = false;
+  bool print_things = false;
   // int u8_one = 1;
 
   ImGui::Begin("Control Panel");
-  for (size_t i = 0; i < control_points.size(); i++) {
-    ImGui::Text("Ctrl Pt %zu", i);
-    ImGui::PushID((int)i);
-    // modified |= ImGui::SliderFloat("Weight", &weights_[i], 0, 10);
-    modified |= ImGui::InputFloat("Weight", &weights_[i], 1.0, 1.0);
-    ImGui::PopID();
-  }
-  ImGui::Text("Selected control point");
-  ImGui::PushID((int)control_points.size());
-  change_control_pt_selection |= ImGui::SliderInt("Selected point", &selected_control_pt, 0, control_points.size()-1);
+  ImGui::Text("Selected control point:");
+  ImGui::PushID((int)0);
+  change_control_pt_selection |= ImGui::SliderInt("", &selected_control_pt, 0, control_points.size()-1);
   ImGui::PopID();
+  ImGui::Text("Weight of selected control point:");
+  modified |= ImGui::InputFloat("", &weights_[selected_control_pt], 1.0, 1.0);
+  // for (size_t i = 0; i < control_points.size(); i++) {
+  //   ImGui::Text("Ctrl pt %zu weight", i);
+  //   ImGui::PushID((int)i+1);
+  //   // modified |= ImGui::SliderFloat("Weight", &weights_[i], 0, 10);
+  //   modified |= ImGui::InputFloat("", &weights_[i], 1.0, 1.0);
+  //   ImGui::PopID();
+  // }
+  ImGui::Text("");
+  ImGui::Text("Circle:");
+  ImGui::Text("Selected circle:");
+  ImGui::PushID((int)1);
+  change_circle_selection |= ImGui::SliderInt("", &selected_circle, -1, nurbs_circle_ptrs_.size()-1);
+  ImGui::PopID();
+  ImGui::Text("Add a circle:");
+  ImGui::InputFloat4("R, X, Y, Z", &circle_settings_[0], 1.0, 1.0);
+  button_pushed |= ImGui::SmallButton("Insert Circle");
 
-  // ImGui::SmallButton("Insert Circle");
-  // ImGui::InputScalar("input u8",      ImGuiDataType_U8,     &u8_v, (int)1 ? &u8_one  : NULL, "%u");
+  ImGui::Text("");
+  ImGui::Text("Get control points info");
+  print_things |= ImGui::SmallButton("Get info!");
+  // modified |= ImGui::InputFloat("", &weights_[selected_control_pt], 1.0, 1.0);
   ImGui::End();
 
   if (modified) {
@@ -136,6 +153,43 @@ void SplineViewerApp::DrawGUI() {
   if (change_control_pt_selection){
     nurbs_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);
   }
+  if (button_pushed){
+    SceneNode& root = scene_->GetRootNode();
+    auto circle = make_unique<NURBSCircle>(glm::vec3(circle_settings_[1], circle_settings_[2], circle_settings_[3]), circle_settings_[0]);
+    nurbs_circle_ptrs_.push_back(circle.get());
+    root.AddChild(std::move(circle));
+  }
+
+  if (change_circle_selection){
+    if (selected_circle == -1){
+      nurbs_node_ptr_->ChangeEditStatus(true);
+      for (int i = 0; i < nurbs_circle_ptrs_.size(); i++){
+        nurbs_circle_ptrs_[i]->GetNurbsNodePtr()->ChangeEditStatus(false);
+      }
+    } else{
+      nurbs_node_ptr_->ChangeEditStatus(false);
+      for (int i = 0; i < nurbs_circle_ptrs_.size(); i++){
+        nurbs_circle_ptrs_[i]->GetNurbsNodePtr()->ChangeEditStatus(false);
+      }
+      nurbs_circle_ptrs_[selected_circle]->GetNurbsNodePtr()->ChangeEditStatus(true);
+    }
+  }
+
+  if (print_things){
+    std::vector<glm::vec3> control_points_locations = nurbs_node_ptr_->GetControlPointsLocations();
+    std::vector<float> control_points_weights = nurbs_node_ptr_->GetWeights();
+    std::cout << "Control points locations and weights: " << std::endl;
+    for (size_t i = 0; i < control_points_locations.size(); i++) {
+      std::cout << control_points_locations[i].x << " " << control_points_locations[i].y << " " << control_points_locations[i].z << " " << control_points_weights[i] << std::endl;
+    }
+    // std::cout << "Knots: " << std::endl;
+    // for (size_t i = 0; i < knots.size(); i++) {
+    //   std::cout << knots[i] << std::endl;
+    // }
+    // std::cout << "Degree: " << degree << std::endl;
+  }
+
+  //UpdateCenter(glm::vec3 new_center)
 }
 }  // namespace GLOO
 

@@ -1,4 +1,5 @@
 #include "NURBSNode.hpp"
+#include <string>
 
 #include "gloo/debug/PrimitiveFactory.hpp"
 #include "gloo/components/RenderingComponent.hpp"
@@ -9,12 +10,14 @@
 #include "gloo/InputManager.hpp"
 
 namespace GLOO {
-NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knots, NURBSBasis spline_basis) {
+NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knots, NURBSBasis spline_basis, char curve_type, bool curve_being_edited) {
     degree_ = degree;
     control_pts_ = control_points;
     knots_ = knots;
     spline_basis_ = spline_basis;
     weights_ = weights;
+    curve_type_ = curve_type;
+    curve_being_edited_ = curve_being_edited;
 
     // Initialize the VertexObjects and shaders used to render the control points,
     // the curve, and the tangent line.
@@ -188,41 +191,104 @@ void NURBSNode::PlotControlPoints() {
     }
 }
 
-void NURBSNode::Update(double delta_time) {
+void NURBSNode::ChangeEditStatus(bool curve_being_edited){
+    curve_being_edited_ = curve_being_edited;
+}
 
-  // Prevent multiple toggle.
-  static bool prev_released = true;
-  if (InputManager::GetInstance().IsKeyPressed('W')) {
-    // if (prev_released) { // Interpret the control points as the other basis
-        control_pts_[selected_control_point_].y += 0.05;
-        PlotControlPoints();
-        PlotCurve();
-    // }
-    prev_released = false;
-  } else if (InputManager::GetInstance().IsKeyPressed('A')) {
-    // if (prev_released) {
-        control_pts_[selected_control_point_].x -= 0.05;
-        PlotControlPoints();
-        PlotCurve();
-    // }
-    prev_released = false;
-  } else if (InputManager::GetInstance().IsKeyPressed('S')) {
-    // if (prev_released) {
-        control_pts_[selected_control_point_].y -= 0.05;
-        PlotControlPoints();
-        PlotCurve();
-    // }
-    prev_released = false;
-  } else if (InputManager::GetInstance().IsKeyPressed('D')) {
-    // if (prev_released) {
-        control_pts_[selected_control_point_].x += 0.05;
-        PlotControlPoints();
-        PlotCurve();
-    // }
-    prev_released = false;
-  }else {
-    prev_released = true;
+void NURBSNode::Update(double delta_time) {
+  if (curve_type_ == 'R' && curve_being_edited_){
+    // Prevent multiple toggle.
+    static bool prev_released = true;
+    if (InputManager::GetInstance().IsKeyPressed('W')) {
+        // if (prev_released) { // Interpret the control points as the other basis
+            control_pts_[selected_control_point_].y += 0.05;
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    } else if (InputManager::GetInstance().IsKeyPressed('A')) {
+        // if (prev_released) {
+            control_pts_[selected_control_point_].x -= 0.05;
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    } else if (InputManager::GetInstance().IsKeyPressed('S')) {
+        // if (prev_released) {
+            control_pts_[selected_control_point_].y -= 0.05;
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    } else if (InputManager::GetInstance().IsKeyPressed('D')) {
+        // if (prev_released) {
+            control_pts_[selected_control_point_].x += 0.05;
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    }else {
+        prev_released = true;
+    }
   }
+  else if (curve_type_ == 'C' && curve_being_edited_){
+    static bool prev_released = true;
+    if (InputManager::GetInstance().IsKeyPressed('W')) {
+        // if (prev_released) { // Interpret the control points as the other basis
+            for (int i = 0; i < control_pts_.size(); i++){
+                control_pts_[i].y += 0.05;
+            }
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    } else if (InputManager::GetInstance().IsKeyPressed('A')) {
+        // if (prev_released) {
+            for (int i = 0; i < control_pts_.size(); i++){
+                control_pts_[i].x -= 0.05;
+            }
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    } else if (InputManager::GetInstance().IsKeyPressed('S')) {
+        // if (prev_released) {
+            for (int i = 0; i < control_pts_.size(); i++){
+                control_pts_[i].y -= 0.05;
+            }
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    } else if (InputManager::GetInstance().IsKeyPressed('D')) {
+        // if (prev_released) {
+            for (int i = 0; i < control_pts_.size(); i++){
+                control_pts_[i].x += 0.05;
+            }
+            PlotControlPoints();
+            PlotCurve();
+        // }
+        prev_released = false;
+    }else {
+        prev_released = true;
+    }
+  }
+}
+
+// void NURBSNode::ChangeControlPointLocation(char key){
+//     if (&key == "W"){
+//         control_pts_[selected_control_point_].y += 0.05;
+//         PlotControlPoints();
+//         PlotCurve();
+//     }
+// } 
+
+std::vector<glm::vec3> NURBSNode::GetControlPointsLocations(){
+    return control_pts_;
+}
+
+std::vector<float> NURBSNode::GetWeights(){
+    return weights_;
 }
 
 void NURBSNode::ChangeSelectedControlPoint(int new_selected_control_point){
@@ -242,6 +308,14 @@ void NURBSNode::ChangeSelectedControlPoint(int new_selected_control_point){
 
 void NURBSNode::OnWeightChanged(std::vector<float> new_weights){
     weights_ = new_weights;
+    PlotCurve();
+}
+
+void NURBSNode::UpdateControlPoints(std::vector<glm::vec3> new_control_points){
+    control_pts_ = new_control_points;
+    for (int i = 0; i < control_pts_.size(); i++) {
+        control_point_nodes_[i]->GetTransform().SetPosition(control_pts_[i]);
+    }
     PlotCurve();
 }
 }  // namespace GLOO
