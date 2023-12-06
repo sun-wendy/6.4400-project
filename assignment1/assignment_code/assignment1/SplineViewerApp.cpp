@@ -107,11 +107,12 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
   }
 
   // Set up a NURBS node for the loaded file
-  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights, knots, NURBSBasis::NURBS);
+  // auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights, knots, NURBSBasis::NURBS);
   // root.AddChild(std::move(nurbs_node));
 
   // Add a NURBS circle
-  auto nurbs_circle = make_unique<NURBSCircle>(glm::vec3(0.0f), 1.0f);
+  auto nurbs_circle = make_unique<NURBSCircle>(glm::vec3(2.0f), 3.0f);
+  root.AddChild(std::move(nurbs_circle));
 
   // std::string line;
   // for (size_t i = 0; std::getline(fs, line); i++) {

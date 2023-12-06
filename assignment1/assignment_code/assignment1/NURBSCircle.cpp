@@ -14,17 +14,17 @@ NURBSCircle::NURBSCircle(glm::vec3 center, float radius) {
 }
 
 int NURBSCircle::GetDegree() {
-    return 3;
+    return 2;
 }
 
-std::vector<float> NURBSCirlce::GetKnots() {
+std::vector<float> NURBSCircle::GetKnots() {
     std::vector<float> knots;
 
     for (int i = 0; i < 3; i++) {
         knots.push_back(0.0f);
     }
 
-    for (int i = 0; i < 2; i++} {
+    for (int i = 0; i < 2; i++) {
         knots.push_back(glm::pi<float>() / 2.0f);
     }
 

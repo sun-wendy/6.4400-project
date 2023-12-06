@@ -531,10 +531,24 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.s: cmake_fo
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.s"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/CurveNode.cpp -o CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.s
 
+CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o: CMakeFiles/assignment1.dir/flags.make
+CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSCircle.cpp
+CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSCircle.cpp
+
+CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSCircle.cpp > CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.i
+
+CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSCircle.cpp -o CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.s
+
 CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o: CMakeFiles/assignment1.dir/flags.make
 CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSNode.cpp
 CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSNode.cpp
 
 CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.i: cmake_force
@@ -548,7 +562,7 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.s: cmake_fo
 CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o: CMakeFiles/assignment1.dir/flags.make
 CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/PatchNode.cpp
 CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/PatchNode.cpp
 
 CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.i: cmake_force
@@ -562,7 +576,7 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.s: cmake_fo
 CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o: CMakeFiles/assignment1.dir/flags.make
 CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/SplineViewerApp.cpp
 CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/SplineViewerApp.cpp
 
 CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.i: cmake_force
@@ -576,7 +590,7 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.s: cm
 CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o: CMakeFiles/assignment1.dir/flags.make
 CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/Surface.cpp
 CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/Surface.cpp
 
 CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.i: cmake_force
@@ -590,7 +604,7 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/Surface.cpp.s: cmake_forc
 CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o: CMakeFiles/assignment1.dir/flags.make
 CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/main.cpp
 CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/main.cpp
 
 CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.i: cmake_force
@@ -604,7 +618,7 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/main.cpp.s: cmake_force
 CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o: CMakeFiles/assignment1.dir/flags.make
 CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o: /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/common/helpers.cpp
 CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o: CMakeFiles/assignment1.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o"
 	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o -MF CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o.d -o CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o -c /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/common/helpers.cpp
 
 CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.i: cmake_force
@@ -650,6 +664,7 @@ assignment1_OBJECTS = \
 "CMakeFiles/assignment1.dir/external/src/imgui/examples/imgui_impl_glfw.cpp.o" \
 "CMakeFiles/assignment1.dir/external/src/imgui/examples/imgui_impl_opengl3.cpp.o" \
 "CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.o" \
+"CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o" \
 "CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o" \
 "CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o" \
 "CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o" \
@@ -693,6 +708,7 @@ assignment1: CMakeFiles/assignment1.dir/external/src/imgui/imgui_widgets.cpp.o
 assignment1: CMakeFiles/assignment1.dir/external/src/imgui/examples/imgui_impl_glfw.cpp.o
 assignment1: CMakeFiles/assignment1.dir/external/src/imgui/examples/imgui_impl_opengl3.cpp.o
 assignment1: CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.o
+assignment1: CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o
 assignment1: CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.o
 assignment1: CMakeFiles/assignment1.dir/assignment_code/assignment1/PatchNode.cpp.o
 assignment1: CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o
@@ -702,7 +718,7 @@ assignment1: CMakeFiles/assignment1.dir/assignment_code/common/helpers.cpp.o
 assignment1: CMakeFiles/assignment1.dir/build.make
 assignment1: external/src/glfw-3.3.2/src/libglfw3.a
 assignment1: CMakeFiles/assignment1.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Linking CXX executable assignment1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/wendysun/Desktop/6.4400-project/assignment1/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Linking CXX executable assignment1"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/assignment1.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

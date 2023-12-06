@@ -224,6 +224,30 @@ assignment_code/assignment1/CurveNode.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/CurveNode.cpp.s
 .PHONY : assignment_code/assignment1/CurveNode.cpp.s
 
+assignment_code/assignment1/NURBSCircle.o: assignment_code/assignment1/NURBSCircle.cpp.o
+.PHONY : assignment_code/assignment1/NURBSCircle.o
+
+# target to build an object file
+assignment_code/assignment1/NURBSCircle.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.o
+.PHONY : assignment_code/assignment1/NURBSCircle.cpp.o
+
+assignment_code/assignment1/NURBSCircle.i: assignment_code/assignment1/NURBSCircle.cpp.i
+.PHONY : assignment_code/assignment1/NURBSCircle.i
+
+# target to preprocess a source file
+assignment_code/assignment1/NURBSCircle.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.i
+.PHONY : assignment_code/assignment1/NURBSCircle.cpp.i
+
+assignment_code/assignment1/NURBSCircle.s: assignment_code/assignment1/NURBSCircle.cpp.s
+.PHONY : assignment_code/assignment1/NURBSCircle.s
+
+# target to generate assembly for a file
+assignment_code/assignment1/NURBSCircle.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSCircle.cpp.s
+.PHONY : assignment_code/assignment1/NURBSCircle.cpp.s
+
 assignment_code/assignment1/NURBSNode.o: assignment_code/assignment1/NURBSNode.cpp.o
 .PHONY : assignment_code/assignment1/NURBSNode.o
 
@@ -1154,6 +1178,9 @@ help:
 	@echo "... assignment_code/assignment1/CurveNode.o"
 	@echo "... assignment_code/assignment1/CurveNode.i"
 	@echo "... assignment_code/assignment1/CurveNode.s"
+	@echo "... assignment_code/assignment1/NURBSCircle.o"
+	@echo "... assignment_code/assignment1/NURBSCircle.i"
+	@echo "... assignment_code/assignment1/NURBSCircle.s"
 	@echo "... assignment_code/assignment1/NURBSNode.o"
 	@echo "... assignment_code/assignment1/NURBSNode.i"
 	@echo "... assignment_code/assignment1/NURBSNode.s"
