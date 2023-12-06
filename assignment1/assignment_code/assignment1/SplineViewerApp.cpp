@@ -11,6 +11,7 @@
 #include "PatchNode.hpp"
 #include "Surface.hpp"
 #include "NURBSNode.hpp"
+#include "NURBSCircle.hpp"
 
 namespace GLOO {
 
@@ -107,7 +108,10 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
 
   // Set up a NURBS node for the loaded file
   auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights, knots, NURBSBasis::NURBS);
-  root.AddChild(std::move(nurbs_node));
+  // root.AddChild(std::move(nurbs_node));
+
+  // Add a NURBS circle
+  auto nurbs_circle = make_unique<NURBSCircle>(glm::vec3(0.0f), 1.0f);
 
   // std::string line;
   // for (size_t i = 0; std::getline(fs, line); i++) {

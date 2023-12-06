@@ -3985,6 +3985,7 @@ CMakeFiles/assignment1.dir/assignment_code/assignment1/SplineViewerApp.cpp.o: /U
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h \
   /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/CurveNode.hpp \
+  /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSCircle.hpp \
   /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSNode.hpp \
   /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/PatchNode.hpp \
   /Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/SplineViewerApp.hpp \
@@ -30917,6 +30918,8 @@ CMakeFiles/assignment1.dir/gloo/utils.cpp.o: /Users/wendysun/Desktop/6.4400-proj
 /Users/wendysun/Desktop/6.4400-project/assignment1/gloo/Scene.hpp:
 
 /Users/wendysun/Desktop/6.4400-project/assignment1/gloo/Renderer.hpp:
+
+/Users/wendysun/Desktop/6.4400-project/assignment1/assignment_code/assignment1/NURBSCircle.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/iomanip:
 
