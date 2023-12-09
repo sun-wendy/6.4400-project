@@ -52,10 +52,10 @@ int NURBSNode::GetDegree(){
 
 // Adapted from https://www.codeproject.com/Articles/1095142/Generate-and-understand-NURBS-curves
 // Dynamic Programming approach to calculate value of basis functions at time u
-float NURBSNode::CalcNip(int control_point_i, float time_u){ 
+float NURBSNode::CalcNip(int control_point_i, int degree, float time_u, std::vector<float> knots){ 
     int i = control_point_i; // converting variable names to what is used in the textbook
-    int p = degree_;
-    std::vector<float> U = knots_;
+    int p = degree;
+    std::vector<float> U = knots;
     float u = time_u;
 
     std::vector<float> N(p + 1);
@@ -137,15 +137,15 @@ NURBSPoint NURBSNode::EvalCurve(float t) {
     NURBSPoint curve_point;
     curve_point.P = glm::vec3(0.0f);
     curve_point.T = glm::vec3(0.0f);
-    float rationalWeight = 0.0;
+    float rationalWeight = 0.0; // the denominator
 
     for (int i = 0; i < control_pts_.size(); i++){
-        float temp = CalcNip(i, t) * weights_[i];
+        float temp = CalcNip(i, degree_, t, knots_) * weights_[i];
         rationalWeight += temp;
     }
 
     for (int i = 0; i < control_pts_.size(); i++){
-        float temp = CalcNip(i, t);
+        float temp = CalcNip(i, degree_, t, knots_);
         curve_point.P += control_pts_[i] * weights_[i] * temp/rationalWeight;
     }
     return curve_point;

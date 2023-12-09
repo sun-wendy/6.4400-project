@@ -272,6 +272,30 @@ assignment_code/assignment1/NURBSNode.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSNode.cpp.s
 .PHONY : assignment_code/assignment1/NURBSNode.cpp.s
 
+assignment_code/assignment1/NURBSSurface.o: assignment_code/assignment1/NURBSSurface.cpp.o
+.PHONY : assignment_code/assignment1/NURBSSurface.o
+
+# target to build an object file
+assignment_code/assignment1/NURBSSurface.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSSurface.cpp.o
+.PHONY : assignment_code/assignment1/NURBSSurface.cpp.o
+
+assignment_code/assignment1/NURBSSurface.i: assignment_code/assignment1/NURBSSurface.cpp.i
+.PHONY : assignment_code/assignment1/NURBSSurface.i
+
+# target to preprocess a source file
+assignment_code/assignment1/NURBSSurface.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSSurface.cpp.i
+.PHONY : assignment_code/assignment1/NURBSSurface.cpp.i
+
+assignment_code/assignment1/NURBSSurface.s: assignment_code/assignment1/NURBSSurface.cpp.s
+.PHONY : assignment_code/assignment1/NURBSSurface.s
+
+# target to generate assembly for a file
+assignment_code/assignment1/NURBSSurface.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/assignment1.dir/build.make CMakeFiles/assignment1.dir/assignment_code/assignment1/NURBSSurface.cpp.s
+.PHONY : assignment_code/assignment1/NURBSSurface.cpp.s
+
 assignment_code/assignment1/PatchNode.o: assignment_code/assignment1/PatchNode.cpp.o
 .PHONY : assignment_code/assignment1/PatchNode.o
 
@@ -1184,6 +1208,9 @@ help:
 	@echo "... assignment_code/assignment1/NURBSNode.o"
 	@echo "... assignment_code/assignment1/NURBSNode.i"
 	@echo "... assignment_code/assignment1/NURBSNode.s"
+	@echo "... assignment_code/assignment1/NURBSSurface.o"
+	@echo "... assignment_code/assignment1/NURBSSurface.i"
+	@echo "... assignment_code/assignment1/NURBSSurface.s"
 	@echo "... assignment_code/assignment1/PatchNode.o"
 	@echo "... assignment_code/assignment1/PatchNode.i"
 	@echo "... assignment_code/assignment1/PatchNode.s"

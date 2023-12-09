@@ -29,7 +29,7 @@ class NURBSNode : public SceneNode {
     void PlotCurve();
     void PlotControlPoints();
     // void PlotTangentLine();
-    float CalcNip(int control_point_i, float time_u);
+    float CalcNip(int control_point_i, int degree, float time_u, std::vector<float> knots);
     void UpdateControlPointsPositions(std::vector<glm::vec3> new_control_points);
     void ChangeEditStatus(bool curve_being_edited);
     std::vector<glm::vec3> GetControlPointsLocations();

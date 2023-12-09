@@ -4,6 +4,7 @@
 #include "gloo/Application.hpp"
 #include "NURBSNode.hpp"
 #include "NURBSCircle.hpp"
+#include "NURBSSurface.hpp"
 
 namespace GLOO {
 class SplineViewerApp : public Application {
@@ -17,6 +18,7 @@ protected:
   void DrawGUI() override;
 
  private:
+  void DrawSplineGUI();
   void LoadFile(const std::string& filename, SceneNode& root);
   std::vector<float> slider_values_;
   std::vector<float> weights_;
@@ -27,6 +29,10 @@ protected:
   int selected_circle = -1;
   float circle_settings_[4] = { 0.0, 0.0, 0.0, 1.0 };
   float control_point_settings_[4] = {0.0, 0.0, 0.0, 1.0};
+  std::string spline_type_;
+
+
+  NURBSSurface* surface_node_ptr_;
   // int u8_v = 0;
 
   std::string filename_;

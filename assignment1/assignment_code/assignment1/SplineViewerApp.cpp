@@ -13,6 +13,7 @@
 #include "Surface.hpp"
 #include "NURBSNode.hpp"
 #include "NURBSCircle.hpp"
+#include "NURBSSurface.hpp"
 
 
 namespace GLOO {
@@ -55,61 +56,142 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
     return;
   }
 
-  std::string spline_type;
-  std::getline(fs, spline_type);
 
-  SplineBasis spline_basis;
-  std::vector<float> knots;
-  int degree;
-  // std::vector<float> weights;
+  std::getline(fs, spline_type_);
 
-  std::string line;
-  while (std::getline(fs, line)) {
-    if (line == "control points") {
-      while (std::getline(fs, line)) {
-        if (line == "knots") {
-          break;
+  if (spline_type_ == "NURBS curve"){
+    std::vector<float> knots;
+    int degree;
+    std::string line;
+    while (std::getline(fs, line)) {
+      if (line == "control points") {
+        while (std::getline(fs, line)) {
+          if (line == "knots") {
+            break;
+          }
+          std::stringstream ss(line);
+          float x, y, z, w;
+          ss >> x >> y >> z >> w;
+          control_points.push_back(glm::vec3(x, y, z));
+          weights_.push_back(w);
         }
+      }
+      if (line == "knots") {
+        std::getline(fs, line);
         std::stringstream ss(line);
-        float x, y, z, w;
-        ss >> x >> y >> z >> w;
-        control_points.push_back(glm::vec3(x, y, z));
-        weights_.push_back(w);
+        float knot;
+        while (ss >> knot) {
+          knots.push_back(knot);
+        }
+      }
+      if (line == "degree") {
+        std::getline(fs, line);
+        std::stringstream ss(line);
+        ss >> degree;
       }
     }
-    if (line == "knots") {
-      std::getline(fs, line);
-      std::stringstream ss(line);
-      float knot;
-      while (ss >> knot) {
-        knots.push_back(knot);
+    // For debugging
+    std::cout << "Control points: " << std::endl;
+    for (size_t i = 0; i < control_points.size(); i++) {
+      std::cout << control_points[i].x << " " << control_points[i].y << " " << control_points[i].z << std::endl;
+    }
+    std::cout << "Knots: " << std::endl;
+    for (size_t i = 0; i < knots.size(); i++) {
+      std::cout << knots[i] << std::endl;
+    }
+    std::cout << "Degree: " << degree << std::endl;
+
+    // Set up a NURBS node for the loaded file
+    auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights_, knots, NURBSBasis::NURBS, 'R', true);
+    nurbs_node_ptr_ = nurbs_node.get();
+    root.AddChild(std::move(nurbs_node));
+  } else{
+      int degreeU;
+      int degreeV;
+      int numRows; // num rows
+      int numCols; // num cols
+      std::vector<float> knotsU;
+      std::vector<float> knotsV;
+
+      std::string line;
+      while (std::getline(fs, line)) {
+        if (line == "dimensions") {
+          std::getline(fs, line);
+          std::stringstream ss(line);
+          int i, j;
+          ss >> numRows >> numCols;
+        }
+
+        if (line == "control points") {
+          while (std::getline(fs, line)) {
+            if (line == "knots U") {
+              break;
+            }
+            std::stringstream ss(line);
+            float x, y, z, w;
+            ss >> x >> y >> z >> w;
+            control_points.push_back(glm::vec3(x, y, z));
+            weights_.push_back(w);
+          }
+        }
+        if (line == "knots U") {
+          std::getline(fs, line);
+          std::stringstream ss(line);
+          float knot;
+          while (ss >> knot) {
+            knotsU.push_back(knot);
+          }
+        }
+        if (line == "knots V") {
+          std::getline(fs, line);
+          std::stringstream ss(line);
+          float knot;
+          while (ss >> knot) {
+            knotsV.push_back(knot);
+          }
+        }
+        if (line == "degree") {
+          std::getline(fs, line);
+          std::stringstream ss(line);
+          ss >> degreeU >> degreeV;
+        }
       }
+
+    // for debugging:
+    std::cout << "Control points: " << std::endl;
+    for (size_t i = 0; i < control_points.size(); i++) {
+      std::cout << control_points[i].x << " " << control_points[i].y << " " << control_points[i].z << " " << weights_[i] << std::endl;
     }
-    if (line == "degree") {
-      std::getline(fs, line);
-      std::stringstream ss(line);
-      ss >> degree;
+    std::cout << "Num rows: " << numRows << std::endl;
+    std::cout << "Num cols: " << numCols << std::endl;
+    std::cout << "Degree U: " << degreeU << std::endl;
+    std::cout << "Degree V: " << degreeV << std::endl;
+
+    std::cout << "Knots U: " << std::endl;
+    for (size_t i = 0; i < knotsU.size(); i++) {
+      std::cout << knotsU[i] << ' ';
     }
+    std::cout << std::endl;
+
+    std::cout << "Knots V: " << std::endl;
+    for (size_t i = 0; i < knotsV.size(); i++) {
+      std::cout << knotsV[i] << ' ';
+    }
+    std::cout << std::endl;
+
+
+    auto surface_node = make_unique<NURBSSurface>(numRows, numCols, control_points, weights_, knotsU, knotsV, degreeU, degreeV);
+    surface_node_ptr_ = surface_node.get();
+    root.AddChild(std::move(surface_node));
   }
 
-  // For debugging
-  std::cout << "Control points: " << std::endl;
-  for (size_t i = 0; i < control_points.size(); i++) {
-    std::cout << control_points[i].x << " " << control_points[i].y << " " << control_points[i].z << std::endl;
-  }
-  std::cout << "Knots: " << std::endl;
-  for (size_t i = 0; i < knots.size(); i++) {
-    std::cout << knots[i] << std::endl;
-  }
-  std::cout << "Degree: " << degree << std::endl;
-
-  // Set up a NURBS node for the loaded file
-  auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights_, knots, NURBSBasis::NURBS, 'R', true);
-  nurbs_node_ptr_ = nurbs_node.get();
-  root.AddChild(std::move(nurbs_node));
 }
-
-void SplineViewerApp::DrawGUI() {
+void SplineViewerApp::DrawGUI(){
+  if (spline_type_ == "NURBS curve"){
+    DrawSplineGUI();
+  }
+}
+void SplineViewerApp::DrawSplineGUI() {
   bool change_control_pt_selection = false; // change which control point is selected
   bool modified = false; // change the selected control point's location
   bool control_point_button_pushed_clamped = false; // curve goes through the first and last control points. ADDS a new control point.
