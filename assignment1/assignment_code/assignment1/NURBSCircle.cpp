@@ -36,7 +36,7 @@ void NURBSCircle::UpdateCenter(glm::vec3 new_center){ // unused function
     new_control_points.push_back(glm::vec3(center_.x, center_.y - radius_, center_.z));
     new_control_points.push_back(glm::vec3(center_.x + radius_, center_.y - radius_, center_.z));
     new_control_points.push_back(glm::vec3(center_.x + radius_, center_.y, center_.z));
-    nurbs_circle_node_ptr_->UpdateControlPoints(new_control_points);
+    nurbs_circle_node_ptr_->UpdateControlPointsPositions(new_control_points);
 }
 
 std::vector<float> NURBSCircle::GetKnots() {

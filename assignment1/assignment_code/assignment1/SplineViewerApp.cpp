@@ -20,7 +20,7 @@ namespace GLOO {
 SplineViewerApp::SplineViewerApp(const std::string& app_name,
                                  glm::ivec2 window_size,
                                  const std::string& filename)
-    : Application(app_name, window_size), filename_(filename), slider_values_(10, 0.0f) {
+    : Application(app_name, window_size), slider_values_(10, 0.0f), filename_(filename) {
 }
 
 void SplineViewerApp::SetupScene() {
@@ -110,18 +110,19 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
 }
 
 void SplineViewerApp::DrawGUI() {
-  bool modified = false;
-  bool change_control_pt_selection = false;
-  bool control_point_button_pushed_clamped = false;
-  bool control_point_button_pushed_unclamped = false;
-  bool circle_button_pushed = false;
-  bool change_circle_selection = false;
-  bool print_things = false;
-  bool clamp_ends = false;
-  bool unclamp_ends = false;
-  // int u8_one = 1;
+  bool change_control_pt_selection = false; // change which control point is selected
+  bool modified = false; // change the selected control point's location
+  bool control_point_button_pushed_clamped = false; // curve goes through the first and last control points. ADDS a new control point.
+  bool control_point_button_pushed_unclamped = false; // curve doesn't go through the first and last control points. ADDS a new control point.
+  bool clamp_ends = false; // curve goes through the first and last control points. Does NOT add a new control point.
+  bool unclamp_ends = false;  // curve doesn't go through the first and last control points. Does NOT add a new control point.
+  bool circle_button_pushed = false; // adds circle
+  bool change_circle_selection = false; // select the circle that you want to move
+  bool print_things = false; // prints out curve information in the format of a .spline file
 
+  // CONTROL PANEL GUI
   ImGui::Begin("Control Panel");
+  // editing existing control points
   ImGui::Text("Selected control point:");
   ImGui::PushID((int)0);
   change_control_pt_selection |= ImGui::SliderInt("", &selected_control_pt, 0, nurbs_node_ptr_->GetControlPointsLocations().size()-1);
@@ -132,7 +133,7 @@ void SplineViewerApp::DrawGUI() {
   ImGui::PopID();
   clamp_ends |= ImGui::SmallButton("Clamp ends");
   unclamp_ends |= ImGui::SmallButton("Unclamp ends");
-  
+  // adding new control point
   ImGui::Text("Add a control point:");
   ImGui::PushID((int)2);
   ImGui::InputFloat4("X, Y, Z, W", &control_point_settings_[0], 1.0, 1.0);
@@ -140,50 +141,52 @@ void SplineViewerApp::DrawGUI() {
   control_point_button_pushed_clamped |= ImGui::SmallButton("Add control point w/ clamped ends");
   control_point_button_pushed_unclamped |= ImGui::SmallButton("Add control point w/o clamped ends");
   ImGui::Text("");
+  // editing existing circle
   ImGui::Text("Circle:");
-  ImGui::Text("Selected circle:");
+  ImGui::Text("Selected circle: (-1 = none selected)");
   ImGui::PushID((int)3);
   change_circle_selection |= ImGui::SliderInt("", &selected_circle, -1, nurbs_circle_ptrs_.size()-1);
   ImGui::PopID();
+  // adding new circle
   ImGui::Text("Add a circle:");
   ImGui::InputFloat4("X, Y, Z, R", &circle_settings_[0], 1.0, 1.0);
   circle_button_pushed |= ImGui::SmallButton("Insert Circle");
-
   ImGui::Text("");
-  ImGui::Text("Get control points info");
-  print_things |= ImGui::SmallButton("Get info!");
+  ImGui::Text("Print control points info:");
+  print_things |= ImGui::SmallButton("Print info!");
   ImGui::End();
 
-  if (modified) {
-    nurbs_node_ptr_->OnWeightChanged(weights_);
-  }
-  if (change_control_pt_selection){
+  if (change_control_pt_selection){ // change which control point is selected
     nurbs_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);
   }
 
-  if (control_point_button_pushed_clamped){
-    nurbs_node_ptr_->AddControlPoint(glm::vec3(control_point_settings_[0],control_point_settings_[1],control_point_settings_[2]), control_point_settings_[3], true);
+  if (modified) { // change the selected control point's location
+    nurbs_node_ptr_->OnWeightChanged(weights_);
+  }
+
+  if (control_point_button_pushed_clamped){  // curve goes through the first and last control points. ADDS a new control point.
+    nurbs_node_ptr_->AddNewControlPoint(glm::vec3(control_point_settings_[0],control_point_settings_[1],control_point_settings_[2]), control_point_settings_[3], true);
+    weights_.push_back(control_point_settings_[3]);
+  } 
+  if (control_point_button_pushed_unclamped){ // curve doesn't go through the first and last control points. ADDS a new control point.
+    nurbs_node_ptr_->AddNewControlPoint(glm::vec3(control_point_settings_[0],control_point_settings_[1],control_point_settings_[2]), control_point_settings_[3], false);
     weights_.push_back(control_point_settings_[3]);
   }
-  if (control_point_button_pushed_unclamped){
-    nurbs_node_ptr_->AddControlPoint(glm::vec3(control_point_settings_[0],control_point_settings_[1],control_point_settings_[2]), control_point_settings_[3], false);
-    weights_.push_back(control_point_settings_[3]);
-  }
-  if (clamp_ends){
+  if (clamp_ends){ // curve goes through the first and last control points. Does NOT add a new control point.
     nurbs_node_ptr_->CalcKnotVector(true, false);
   }
-  if (unclamp_ends){
+  if (unclamp_ends){ // curve doesn't go through the first and last control points. Does NOT add a new control point.
     nurbs_node_ptr_->CalcKnotVector(false, false);
   }
 
-  if (circle_button_pushed){
+  if (circle_button_pushed){  // adds circle
     SceneNode& root = scene_->GetRootNode();
     auto circle = make_unique<NURBSCircle>(glm::vec3(circle_settings_[0], circle_settings_[1], circle_settings_[2]), circle_settings_[3]);
     nurbs_circle_ptrs_.push_back(circle.get());
     root.AddChild(std::move(circle));
   }
 
-  if (change_circle_selection){
+  if (change_circle_selection){ // select the circle that you want to move
     if (selected_circle == -1){
       nurbs_node_ptr_->ChangeEditStatus(true);
       for (int i = 0; i < nurbs_circle_ptrs_.size(); i++){
@@ -198,7 +201,7 @@ void SplineViewerApp::DrawGUI() {
     }
   }
 
-  if (print_things){
+  if (print_things){ // prints out curve information in the format of a .spline file
     std::cout << "NURBS curve" << std::endl;
     std::vector<glm::vec3> control_points_locations = nurbs_node_ptr_->GetControlPointsLocations();
     std::vector<float> control_points_weights = nurbs_node_ptr_->GetWeights();

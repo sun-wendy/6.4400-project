@@ -34,8 +34,25 @@ NURBSNode::NURBSNode(int degree, std::vector<glm::vec3> control_points, std::vec
     PlotControlPoints();
 }
 
-// adapted from https://www.codeproject.com/Articles/1095142/Generate-and-understand-NURBS-curves
-float NURBSNode::CalcNip(int control_point_i, float time_u){ // Dynamic Programming approach to calculate basis
+std::vector<glm::vec3> NURBSNode::GetControlPointsLocations(){
+    return control_pts_;
+}
+
+std::vector<float> NURBSNode::GetWeights(){
+    return weights_;
+}
+
+std::vector<float> NURBSNode::GetKnotVector(){
+    return knots_;
+}
+
+int NURBSNode::GetDegree(){
+    return degree_;
+}
+
+// Adapted from https://www.codeproject.com/Articles/1095142/Generate-and-understand-NURBS-curves
+// Dynamic Programming approach to calculate value of basis functions at time u
+float NURBSNode::CalcNip(int control_point_i, float time_u){ 
     int i = control_point_i; // converting variable names to what is used in the textbook
     int p = degree_;
     std::vector<float> U = knots_;
@@ -87,8 +104,36 @@ float NURBSNode::CalcNip(int control_point_i, float time_u){ // Dynamic Programm
     return N[0];
 }
 
+// 
+std::vector<float> NURBSNode::CalcKnotVector(bool clamped_ends, bool adding_new_point){
+    float n;
+    if (adding_new_point){ // eg when a new control point is added, expand the knot vector
+        n = knots_.size();
+    } else {
+        n = knots_.size() - 1;
+    }
+    std::vector<float> new_knots;
+    new_knots.push_back(0);
+    for (int i = 1; i <= n; i++){
+        new_knots.push_back(i/n);
+    }
 
-NURBSPoint NURBSNode::EvalCurve(float t) { // evaluates the curve at time t. In many textbooks, the variable "u" is used instead.
+    if (clamped_ends){ // if the ends are clamped, the curve goes through the first and last control points
+        for (int i = 0; i <= degree_; i++){
+            new_knots[i] = 0.0;
+            new_knots[n-i] = 1.0;
+        }
+    }
+
+    knots_ = new_knots;
+    PlotControlPoints();
+    PlotCurve();
+
+    return knots_;
+}
+
+// Evaluates the curve at time t. In many textbooks, the variable "u" is used instead.
+NURBSPoint NURBSNode::EvalCurve(float t) { 
     NURBSPoint curve_point;
     curve_point.P = glm::vec3(0.0f);
     curve_point.T = glm::vec3(0.0f);
@@ -102,13 +147,11 @@ NURBSPoint NURBSNode::EvalCurve(float t) { // evaluates the curve at time t. In 
     for (int i = 0; i < control_pts_.size(); i++){
         float temp = CalcNip(i, t);
         curve_point.P += control_pts_[i] * weights_[i] * temp/rationalWeight;
-        // curve_point.P.x += control_pts_[i].x * weights_[i] * temp/rationalWeight;
-        // curve_point.P.y += control_pts_[i].y * weights_[i] * temp/rationalWeight;
-        // curve_point.P.z += control_pts_[i].z * weights_[i] * temp/rationalWeight;
     }
     return curve_point;
 }
 
+// Initial rendering of curve and control points. Fills in all relavant vectors.
 void NURBSNode::InitCurveAndControlPoints() {
     // initialize curve
     float start = knots_[degree_];
@@ -162,9 +205,8 @@ void NURBSNode::InitCurveAndControlPoints() {
     ChangeSelectedControlPoint(0);
 }
 
-
+// Re-render the curve (when control points or knot vector are edited)
 void NURBSNode::PlotCurve() {
-    // Call to update the curve
     float start = knots_[degree_];
     float end = knots_[knots_.size()-degree_-1];
     float interval_length = end-start;
@@ -185,6 +227,7 @@ void NURBSNode::PlotCurve() {
     curve_polyline_->UpdateIndices(std::move(indices));
 }
 
+// Re-render the control points (when control points or knot vector are edited)
 void NURBSNode::PlotControlPoints() {
     for (int i = 0; i < control_pts_.size(); i++) {
         control_point_nodes_[i]->GetTransform().SetPosition(control_pts_[i]);
@@ -195,125 +238,103 @@ void NURBSNode::ChangeEditStatus(bool curve_being_edited){
     curve_being_edited_ = curve_being_edited;
 }
 
+// Keyboard inputs (WASDZX) to edit the location of control point(s)
 void NURBSNode::Update(double delta_time) {
-  if (curve_type_ == 'R' && curve_being_edited_){
+  if (curve_type_ == 'R' && curve_being_edited_){ // Regular (move just the selected control point)
     // Prevent multiple toggle.
-    static bool prev_released = true;
     if (InputManager::GetInstance().IsKeyPressed('W')) {
-        // if (prev_released) { // Interpret the control points as the other basis
-            control_pts_[selected_control_point_].y += 0.05;
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
+        control_pts_[selected_control_point_].y += 0.05;
+        PlotControlPoints();
+        PlotCurve();
     } else if (InputManager::GetInstance().IsKeyPressed('A')) {
-        // if (prev_released) {
-            control_pts_[selected_control_point_].x -= 0.05;
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
+        control_pts_[selected_control_point_].x -= 0.05;
+        PlotControlPoints();
+        PlotCurve();
     } else if (InputManager::GetInstance().IsKeyPressed('S')) {
-        // if (prev_released) {
-            control_pts_[selected_control_point_].y -= 0.05;
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
+        control_pts_[selected_control_point_].y -= 0.05;
+        PlotControlPoints();
+        PlotCurve();
     } else if (InputManager::GetInstance().IsKeyPressed('D')) {
-        // if (prev_released) {
-            control_pts_[selected_control_point_].x += 0.05;
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
-    }else {
-        prev_released = true;
+        control_pts_[selected_control_point_].x += 0.05;
+        PlotControlPoints();
+        PlotCurve();
+    } else if (InputManager::GetInstance().IsKeyPressed('Z')){
+        control_pts_[selected_control_point_].z -= 0.05;
+        PlotControlPoints();
+        PlotCurve();
+    } else if (InputManager::GetInstance().IsKeyPressed('X')){
+        control_pts_[selected_control_point_].z += 0.05;
+        PlotControlPoints();
+        PlotCurve();
     }
   }
-  else if (curve_type_ == 'C' && curve_being_edited_){
-    static bool prev_released = true;
+  else if (curve_type_ == 'C' && curve_being_edited_){ // Circle (move all control points on the circle)
     if (InputManager::GetInstance().IsKeyPressed('W')) {
-        // if (prev_released) { // Interpret the control points as the other basis
-            for (int i = 0; i < control_pts_.size(); i++){
-                control_pts_[i].y += 0.05;
-            }
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
+        for (int i = 0; i < control_pts_.size(); i++){
+            control_pts_[i].y += 0.05;
+        }
+        PlotControlPoints();
+        PlotCurve();
     } else if (InputManager::GetInstance().IsKeyPressed('A')) {
-        // if (prev_released) {
-            for (int i = 0; i < control_pts_.size(); i++){
-                control_pts_[i].x -= 0.05;
-            }
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
+        for (int i = 0; i < control_pts_.size(); i++){
+            control_pts_[i].x -= 0.05;
+        }
+        PlotControlPoints();
+        PlotCurve();
     } else if (InputManager::GetInstance().IsKeyPressed('S')) {
-        // if (prev_released) {
-            for (int i = 0; i < control_pts_.size(); i++){
-                control_pts_[i].y -= 0.05;
-            }
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
+        for (int i = 0; i < control_pts_.size(); i++){
+            control_pts_[i].y -= 0.05;
+        }
+        PlotControlPoints();
+        PlotCurve();
     } else if (InputManager::GetInstance().IsKeyPressed('D')) {
-        // if (prev_released) {
-            for (int i = 0; i < control_pts_.size(); i++){
-                control_pts_[i].x += 0.05;
-            }
-            PlotControlPoints();
-            PlotCurve();
-        // }
-        prev_released = false;
-    }else {
-        prev_released = true;
+        for (int i = 0; i < control_pts_.size(); i++){
+            control_pts_[i].x += 0.05;
+        }
+        PlotControlPoints();
+        PlotCurve();
+    } else if (InputManager::GetInstance().IsKeyPressed('Z')) {
+        for (int i = 0; i < control_pts_.size(); i++){
+            control_pts_[i].z -= 0.05;
+        }
+        PlotControlPoints();
+        PlotCurve();
+    } else if (InputManager::GetInstance().IsKeyPressed('X')) {
+        for (int i = 0; i < control_pts_.size(); i++){
+            control_pts_[i].x += 0.05;
+        }
+        PlotControlPoints();
+        PlotCurve();
     }
   }
 }
 
-
-
-// void NURBSNode::ChangeControlPointLocation(char key){
-//     if (&key == "W"){
-//         control_pts_[selected_control_point_].y += 0.05;
-//         PlotControlPoints();
-//         PlotCurve();
-//     }
-// } 
-
-std::vector<glm::vec3> NURBSNode::GetControlPointsLocations(){
-    return control_pts_;
-}
-
-std::vector<float> NURBSNode::GetWeights(){
-    return weights_;
-}
-
+// Changes which control point is selected (the user can change the location of the selected control point)   
 void NURBSNode::ChangeSelectedControlPoint(int new_selected_control_point){
+    // Deselect previous control point and make it red again
     Material& material = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
-    glm::vec3 green_color(0.f, 1.f, 0.f); // green
     glm::vec3 red_color(1.f, 0.f, 0.f); // red
     material.SetAmbientColor(red_color);
     material.SetDiffuseColor(red_color);
     material.SetSpecularColor(red_color);
-
+    
+    // Select new control point and highlight it in green
     selected_control_point_ = new_selected_control_point;
     Material& material2 = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+    glm::vec3 green_color(0.f, 1.f, 0.f); // green
     material2.SetAmbientColor(green_color);
     material2.SetDiffuseColor(green_color);
     material2.SetSpecularColor(green_color);
 }
 
+// Updates the weights of the CURRENT control points
 void NURBSNode::OnWeightChanged(std::vector<float> new_weights){
     weights_ = new_weights;
     PlotCurve();
 }
 
-void NURBSNode::UpdateControlPoints(std::vector<glm::vec3> new_control_points){
+// Updates the positions of the CURRENT control points // Unused Functions
+void NURBSNode::UpdateControlPointsPositions(std::vector<glm::vec3> new_control_points){
     control_pts_ = new_control_points;
     for (int i = 0; i < control_pts_.size(); i++) {
         control_point_nodes_[i]->GetTransform().SetPosition(control_pts_[i]);
@@ -321,7 +342,8 @@ void NURBSNode::UpdateControlPoints(std::vector<glm::vec3> new_control_points){
     PlotCurve();
 }
 
-void NURBSNode::AddControlPoint(glm::vec3 control_point_loc, float weight, bool clamped_ends){
+// Add a NEW control point
+void NURBSNode::AddNewControlPoint(glm::vec3 control_point_loc, float weight, bool clamped_ends){
     // Add new control point sphere
     control_pts_.push_back(control_point_loc);
     auto point_node = make_unique<SceneNode>();
@@ -340,49 +362,6 @@ void NURBSNode::AddControlPoint(glm::vec3 control_point_loc, float weight, bool 
 
     CalcKnotVector(clamped_ends, true);
 
-};
-std::vector<float> NURBSNode::GetKnotVector(){
-    return knots_;
-}
-int NURBSNode::GetDegree(){
-    return degree_;
 }
 
-std::vector<float> NURBSNode::CalcKnotVector(bool clamped_ends, bool adding_new_point){
-    float n = control_pts_.size();
-    float k = degree_ + 1;
-    float old_knots_size = knots_.size();
-    std::vector<float> new_knots;
-    new_knots.push_back(0);
-
-    if (adding_new_point){
-        for (int i = 1; i <= old_knots_size; i++){
-            new_knots.push_back(i/old_knots_size);
-        }
-        if (clamped_ends){
-            for (int i = 0; i <= degree_; i++){
-                new_knots[i] = 0.0;
-                new_knots[old_knots_size-i] = 1.0;
-            }
-        }
-    } else{
-        for (int i = 1; i < old_knots_size; i++){
-            new_knots.push_back(i/(old_knots_size-1));
-        }
-        if (clamped_ends){
-        for (int i = 0; i <= degree_; i++){
-                new_knots[i] = 0.0;
-                new_knots[old_knots_size-1-i] = 1.0;
-        }
-    }
-
-    }
-
-
-    knots_ = new_knots;
-    PlotControlPoints();
-    PlotCurve();
-
-    return knots_;
-}
 }  // namespace GLOO
