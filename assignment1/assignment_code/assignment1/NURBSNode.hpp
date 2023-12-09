@@ -34,6 +34,10 @@ class NURBSNode : public SceneNode {
     void ChangeEditStatus(bool curve_being_edited);
     std::vector<glm::vec3> GetControlPointsLocations();
     std::vector<float> GetWeights();
+    void AddControlPoint(glm::vec3 control_point_loc, float weight, bool clamped_ends);
+    std::vector<float> CalcKnotVector(bool clamped_ends, bool adding_new_point);
+    std::vector<float> GetKnotVector();
+    int GetDegree();
     
     // void ChangeControlPointLocation(char key);
 

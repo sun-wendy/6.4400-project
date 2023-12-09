@@ -275,6 +275,8 @@ void NURBSNode::Update(double delta_time) {
   }
 }
 
+
+
 // void NURBSNode::ChangeControlPointLocation(char key){
 //     if (&key == "W"){
 //         control_pts_[selected_control_point_].y += 0.05;
@@ -317,5 +319,70 @@ void NURBSNode::UpdateControlPoints(std::vector<glm::vec3> new_control_points){
         control_point_nodes_[i]->GetTransform().SetPosition(control_pts_[i]);
     }
     PlotCurve();
+}
+
+void NURBSNode::AddControlPoint(glm::vec3 control_point_loc, float weight, bool clamped_ends){
+    // Add new control point sphere
+    control_pts_.push_back(control_point_loc);
+    auto point_node = make_unique<SceneNode>();
+    point_node->GetTransform().SetPosition(control_point_loc);
+    point_node->CreateComponent<ShadingComponent>(shader_);
+    auto& rc = point_node->CreateComponent<RenderingComponent>(sphere_mesh_);
+    rc.SetDrawMode(DrawMode::Triangles);
+    glm::vec3 color(1.f, 0.f, 0);
+    auto material = std::make_shared<Material>(color, color, color, 0);
+    point_node->CreateComponent<MaterialComponent>(material);
+    control_point_nodes_.push_back(point_node.get());
+    AddChild(std::move(point_node));
+
+    // Updates weight vec
+    weights_.push_back(weight);
+
+    CalcKnotVector(clamped_ends, true);
+
+};
+std::vector<float> NURBSNode::GetKnotVector(){
+    return knots_;
+}
+int NURBSNode::GetDegree(){
+    return degree_;
+}
+
+std::vector<float> NURBSNode::CalcKnotVector(bool clamped_ends, bool adding_new_point){
+    float n = control_pts_.size();
+    float k = degree_ + 1;
+    float old_knots_size = knots_.size();
+    std::vector<float> new_knots;
+    new_knots.push_back(0);
+
+    if (adding_new_point){
+        for (int i = 1; i <= old_knots_size; i++){
+            new_knots.push_back(i/old_knots_size);
+        }
+        if (clamped_ends){
+            for (int i = 0; i <= degree_; i++){
+                new_knots[i] = 0.0;
+                new_knots[old_knots_size-i] = 1.0;
+            }
+        }
+    } else{
+        for (int i = 1; i < old_knots_size; i++){
+            new_knots.push_back(i/(old_knots_size-1));
+        }
+        if (clamped_ends){
+        for (int i = 0; i <= degree_; i++){
+                new_knots[i] = 0.0;
+                new_knots[old_knots_size-1-i] = 1.0;
+        }
+    }
+
+    }
+
+
+    knots_ = new_knots;
+    PlotControlPoints();
+    PlotCurve();
+
+    return knots_;
 }
 }  // namespace GLOO

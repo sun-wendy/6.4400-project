@@ -25,7 +25,8 @@ protected:
   std::vector<NURBSCircle*> nurbs_circle_ptrs_;
   int selected_control_pt = 0;
   int selected_circle = -1;
-  float circle_settings_[4] = { 1.0, 0.0, 0.0, 0.0 };
+  float circle_settings_[4] = { 0.0, 0.0, 0.0, 1.0 };
+  float control_point_settings_[4] = {0.0, 0.0, 0.0, 1.0};
   // int u8_v = 0;
 
   std::string filename_;
