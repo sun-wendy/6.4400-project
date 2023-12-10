@@ -20,7 +20,7 @@ NURBSSurface::NURBSSurface(int numRows, int numCols, std::vector<glm::vec3> cont
     degreeV_ = degreeV;
 
     patch_mesh_ = std::make_shared<VertexObject>();
-    sphere_mesh_ = PrimitiveFactory::CreateSphere(0.15f, 25, 25);
+    sphere_mesh_ = PrimitiveFactory::CreateSphere(0.1f, 25, 25);
     shader_ = std::make_shared<PhongShader>();
     PlotSurface();
     InitControlPoints();
@@ -80,14 +80,18 @@ float NURBSSurface::CalcNip(int control_point_i, int degree, float time_u, std::
             }
         }
     }
-    // std::cout<<N[0]<<std::endl;
-    // std::cout<<"hi2"<<std::endl;
     return N[0];
 }
 
-// float NURBSNode::CalcNip(int control_point_i, int degree, float time_u, std::vector<float> knots)
+// refercing NURBS book and NURBS book implementation https://github.com/RoberAgro/nurbspy/blob/master/nurbspy/nurbs_surface.py#L412
+std::vector<float> NURBSSurface::get_derivative(float u, float v, int order_u, int order_v){
+ // TO DO
+}
+
+
+
+// Formula from Wikipedia and Springer - The NURBS Book
 NURBSPoint NURBSSurface::EvalPatch(float u, float v){
-    // std::cout<<"hi"<<std::endl;
     NURBSPoint curve_point;
     curve_point.P = glm::vec3(0.0f);
     curve_point.T = glm::vec3(0.0f);
@@ -96,45 +100,25 @@ NURBSPoint NURBSSurface::EvalPatch(float u, float v){
     for (int p = 0; p < numRows_; p++){
         for (int q = 0; q < numCols_; q++){
             float Npn = CalcNip(p, degreeU_, u, knotsU_);
-            // std::cout<<Npn<<std::endl;
             float Nqm = CalcNip(q, degreeV_, v, knotsV_);
-            // std::cout<<Nqm<<std::endl;
-            // std::cout<<"hi4"<<std::endl;
             rationalWeight += Npn * Nqm * weights_[getIndex(p,q)];
         }
     }
-    // std::cout<<rationalWeight<<std::endl;
 
     for (int i = 0; i < numRows_; i++){
         for (int j = 0; j < numCols_; j++){
             float Nin = CalcNip(i, degreeU_, u, knotsU_);
-            // std::cout<<Nin<<std::endl;
             float Njm = CalcNip(j, degreeV_, v, knotsV_);
             
-            // if (rationalWeight != 0){
-            //     curve_point.P += Nin * Njm * weights_[getIndex(i,j)] / rationalWeight;
-            // }
-            curve_point.P += control_points_[getIndex(i,j)] * Nin * Njm * weights_[getIndex(i,j)] / rationalWeight;
-            // std::cout<<"hi6"<<std::endl;
+            if (rationalWeight != 0){
+                curve_point.P += control_points_[getIndex(i,j)] * Nin * Njm * weights_[getIndex(i,j)] / rationalWeight;
+            }
+
         }
     }
-    // std::cout<<"hi6"<<std::endl;
-    // curve_point.T = glm::vec3(0.0, 0.0, 1.0);
-    //  std::cout << curve_point.P.x << curve_point.P.y << curve_point.P.z << std::endl;
-        // auto point_node = make_unique<SceneNode>();
-        // point_node->GetTransform().SetPosition(curve_point.P);
 
-        // point_node->CreateComponent<ShadingComponent>(shader_);
+// TO DO -- calculate surface normals
 
-        // auto& rc = point_node->CreateComponent<RenderingComponent>(sphere_mesh_);
-        // rc.SetDrawMode(DrawMode::Triangles);
-
-        // glm::vec3 color(1.f, 0.f, 0);
-        // auto material = std::make_shared<Material>(color, color, color, 0);
-        // point_node->CreateComponent<MaterialComponent>(material);
-
-        
-        // AddChild(std::move(point_node));
     return curve_point;
 } 
 
@@ -178,9 +162,6 @@ void NURBSSurface::PlotSurface(){
       positions->push_back(p1.P);
       positions->push_back(p2.P);
       positions->push_back(p3.P);
-
-
-    //   std::cout << p0.P.x << p0.P.y << p0.P.z << std::endl;
 
       normals->push_back(p0.T);
       normals->push_back(p1.T);

@@ -36,6 +36,7 @@ class NURBSSurface : public SceneNode {
     float CalcNip(int control_point_i, int degree, float time_u, std::vector<float> knots);
     void PlotSurface();
     void InitControlPoints();
+    std::vector<float> get_derivative(float u, float v, int order_u, int order_v);
     
 //   void PlotPatch();
 //   PatchPoint EvalPatch(float u, float v);
