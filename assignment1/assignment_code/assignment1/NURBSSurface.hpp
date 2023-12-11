@@ -36,18 +36,25 @@ class NURBSSurface : public SceneNode {
     float CalcNip(int control_point_i, int degree, float time_u, std::vector<float> knots);
     void PlotSurface();
     void InitControlPoints();
-    std::vector<float> get_derivative(float u, float v, int order_u, int order_v);
-    
-//   void PlotPatch();
-//   PatchPoint EvalPatch(float u, float v);
+    // std::vector<float> get_derivative(float u, float v, int order_u, int order_v);
+    float Nip_prime(int control_point_i, int degree, float time_u, std::vector<float> knots);
+    std::vector<std::vector<float>> BasisFunctionsDerivatives(int spanIndex, int degree,  int derivative, const std::vector<float> knotVector, float paramT);
+    int GetKnotSpanIndex(int degree, const std::vector<float> knotVector, float paramT);
 
-  std::vector<glm::mat4> Gs_;
-  std::shared_ptr<VertexObject> patch_mesh_;
-  std::shared_ptr<ShaderProgram> shader_;
-  std::shared_ptr<VertexObject> sphere_mesh_;
-  std::vector<SceneNode*> control_point_nodes_;
+    std::vector<std::vector<glm::vec4>> ComputeDerivatives(int degreeU, int degreeV, int derivative, const std::vector<float> knotVectorU, const std::vector<float> knotVectorV, float u, float v, std::vector<std::vector<glm::vec4>> controlPointsHomo);
+    std::vector<std::vector<glm::vec3>> ComputeRationalSurfaceDerivatives(int derivative, float u, float v);
+    float binomial(int n, int k);
+    glm::vec3 Normal(float u, float v);
+    //   void PlotPatch();
+    //   PatchPoint EvalPatch(float u, float v);
 
-  const int N_SUBDIV_ = 50;
+    // std::vector<glm::mat4> Gs_;
+    std::shared_ptr<VertexObject> patch_mesh_;
+    std::shared_ptr<ShaderProgram> shader_;
+    std::shared_ptr<VertexObject> sphere_mesh_;
+    std::vector<SceneNode *> control_point_nodes_;
+
+    const int N_SUBDIV_ = 10;
 };
 }  // namespace GLOO
 
