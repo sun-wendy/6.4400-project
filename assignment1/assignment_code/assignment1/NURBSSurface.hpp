@@ -19,7 +19,14 @@ namespace GLOO {
 class NURBSSurface : public SceneNode {
  public:
   NURBSSurface(int numRows, int numCols, std::vector<glm::vec3> control_points, std::vector<float> weights, std::vector<float> knotsU, std::vector<float> knotsV, int degreeU, int degreeV);
-//   void Update(double delta_time) override;
+  void Update(double delta_time) override;
+  void ChangeSelectedControlPoint(int new_selected_control_point);
+  void OnWeightChanged(std::vector<float> new_weights);
+  void UpdateSurface();
+  void PlotControlPoints();
+  std::vector<glm::vec3> GetControlPointsLocations();
+  std::vector<float> GetWeights();
+
 
  private:
     int numRows_;
@@ -30,6 +37,7 @@ class NURBSSurface : public SceneNode {
     std::vector<float> knotsV_;
     int degreeU_;
     int degreeV_;
+    int selected_control_point_;
 
     int getIndex(int i, int j);
     NURBSPoint EvalPatch(float u, float v); 
@@ -54,7 +62,7 @@ class NURBSSurface : public SceneNode {
     std::shared_ptr<VertexObject> sphere_mesh_;
     std::vector<SceneNode *> control_point_nodes_;
 
-    const int N_SUBDIV_ = 10;
+    const int N_SUBDIV_ = 50;
 };
 }  // namespace GLOO
 

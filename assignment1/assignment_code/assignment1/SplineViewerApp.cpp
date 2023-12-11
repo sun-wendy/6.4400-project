@@ -6,6 +6,7 @@
 #include "gloo/cameras/ArcBallCameraNode.hpp"
 #include "gloo/lights/AmbientLight.hpp"
 #include "gloo/lights/PointLight.hpp"
+#include "gloo/lights/DirectionalLight.hpp"
 #include "gloo/components/LightComponent.hpp"
 
 #include "CurveNode.hpp"
@@ -47,6 +48,15 @@ void SplineViewerApp::SetupScene() {
   point_light_node->CreateComponent<LightComponent>(point_light);
   point_light_node->GetTransform().SetPosition(glm::vec3(0.0f, 4.0f, 5.f));
   root.AddChild(std::move(point_light_node));
+
+  auto point_light2 = std::make_shared<DirectionalLight>();
+  point_light->SetDiffuseColor(glm::vec3(0.2f, 0.9f, 0.9f));
+  point_light2->SetSpecularColor(glm::vec3(1.0f, 1.0f, 1.0f));
+  point_light2->SetDirection(glm::vec3(-1.0f, 0.0, 0.0));
+  auto point_light_node2 = make_unique<SceneNode>();
+  point_light_node2->CreateComponent<LightComponent>(point_light2);
+  point_light_node2->GetTransform().SetPosition(glm::vec3(1.0f, -1.0f, 0.f));
+  root.AddChild(std::move(point_light_node2));
 }
 
 void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
@@ -189,6 +199,8 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
 void SplineViewerApp::DrawGUI(){
   if (spline_type_ == "NURBS curve"){
     DrawSplineGUI();
+  } else{
+    DrawSurfaceGUI();
   }
 }
 void SplineViewerApp::DrawSplineGUI() {
@@ -302,5 +314,47 @@ void SplineViewerApp::DrawSplineGUI() {
     std::cout << nurbs_node_ptr_->GetDegree() << std::endl;
   }
 }
+
+void SplineViewerApp::DrawSurfaceGUI() {
+  bool change_control_pt_selection = false; // change which control point is selected
+  bool modified = false; // change the selected control point's location
+  bool print_things = false;
+
+  // CONTROL PANEL GUI
+  ImGui::Begin("Control Panel");
+  // editing existing control points
+  ImGui::Text("Selected control point:");
+  ImGui::PushID((int)0);
+  change_control_pt_selection |= ImGui::SliderInt("", &selected_control_pt, 0, control_points.size()-1);
+  ImGui::PopID();
+  ImGui::Text("Weight of selected control point:");
+  ImGui::PushID((int)1);
+  modified |= ImGui::InputFloat("", &weights_[selected_control_pt], 1.0, 1.0);
+  ImGui::PopID();
+  ImGui::Text("");
+  ImGui::Text("Print control points info:");
+  print_things |= ImGui::SmallButton("Print info!");
+  ImGui::End();
+
+  if (change_control_pt_selection){ // change which control point is selected
+    surface_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);
+  }
+
+  if (modified) { // change the selected control point's location
+    surface_node_ptr_->OnWeightChanged(weights_);
+  }
+
+  if (print_things){ // prints out curve information in the format of a .spline file
+    std::cout << "NURBS surface" << std::endl;
+    std::vector<glm::vec3> control_points_locations = surface_node_ptr_->GetControlPointsLocations();
+    std::vector<float> control_points_weights = surface_node_ptr_->GetWeights();
+    std::cout << "control points" << std::endl;
+    for (size_t i = 0; i < control_points_locations.size(); i++) {
+      std::cout << control_points_locations[i].x << " " << control_points_locations[i].y << " " << control_points_locations[i].z << " " << control_points_weights[i] << std::endl;
+    }
+  }
+}
+
+
 }  // namespace GLOO
 

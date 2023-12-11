@@ -18,12 +18,79 @@ NURBSSurface::NURBSSurface(int numRows, int numCols, std::vector<glm::vec3> cont
     knotsV_ = knotsV;
     degreeU_ = degreeU;
     degreeV_ = degreeV;
+    selected_control_point_ = 0;
 
     patch_mesh_ = std::make_shared<VertexObject>();
     sphere_mesh_ = PrimitiveFactory::CreateSphere(0.1f, 25, 25);
     shader_ = std::make_shared<PhongShader>();
     PlotSurface();
     InitControlPoints();
+}
+
+void NURBSSurface::ChangeSelectedControlPoint(int new_selected_control_point){
+    // Deselect previous control point and make it red again
+    Material& material = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+    glm::vec3 red_color(1.f, 0.f, 0.f); // red
+    material.SetAmbientColor(red_color);
+    material.SetDiffuseColor(red_color);
+    material.SetSpecularColor(red_color);
+    
+    // Select new control point and highlight it in green
+    selected_control_point_ = new_selected_control_point;
+    Material& material2 = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+    glm::vec3 green_color(0.f, 1.f, 0.f); // green
+    material2.SetAmbientColor(green_color);
+    material2.SetDiffuseColor(green_color);
+    material2.SetSpecularColor(green_color);
+}
+
+
+void NURBSSurface::OnWeightChanged(std::vector<float> new_weights){
+    weights_ = new_weights;
+    UpdateSurface();
+}
+
+void NURBSSurface::Update(double delta_time) {
+    // Prevent multiple toggle.
+    if (InputManager::GetInstance().IsKeyPressed('W')) {
+        control_points_[selected_control_point_].y += 0.05;
+        PlotControlPoints();
+        UpdateSurface();
+    } else if (InputManager::GetInstance().IsKeyPressed('A')) {
+        control_points_[selected_control_point_].x -= 0.05;
+        PlotControlPoints();
+        UpdateSurface();
+    } else if (InputManager::GetInstance().IsKeyPressed('S')) {
+        control_points_[selected_control_point_].y -= 0.05;
+        PlotControlPoints();
+        UpdateSurface();
+    } else if (InputManager::GetInstance().IsKeyPressed('D')) {
+        control_points_[selected_control_point_].x += 0.05;
+        PlotControlPoints();
+        UpdateSurface();
+    } else if (InputManager::GetInstance().IsKeyPressed('Z')){
+        control_points_[selected_control_point_].z -= 0.05;
+        PlotControlPoints();
+        UpdateSurface();
+    } else if (InputManager::GetInstance().IsKeyPressed('X')){
+        control_points_[selected_control_point_].z += 0.05;
+        PlotControlPoints();
+        UpdateSurface();
+    }
+}
+
+std::vector<glm::vec3> NURBSSurface::GetControlPointsLocations(){
+    return control_points_;
+}
+
+std::vector<float> NURBSSurface::GetWeights(){
+    return weights_;
+}
+
+void NURBSSurface::PlotControlPoints() {
+    for (int i = 0; i < control_points_.size(); i++) {
+        control_point_nodes_[i]->GetTransform().SetPosition(control_points_[i]);
+    }
 }
 
 // Useful for indexing into control points
@@ -438,8 +505,6 @@ NURBSPoint NURBSSurface::EvalPatch(float u, float v){
     curve_point.T = Normal(u,v);
     
 
-// TO DO -- calculate surface normals
-
 //  glm::vec3 derivU(0.0f);
 //  for (int i = 0; i < numRows_; i++){
 //     for (int j = 0; j < numCols_; j++){
@@ -486,6 +551,12 @@ void NURBSSurface::InitControlPoints(){
         control_point_nodes_.push_back(point_node.get());
         AddChild(std::move(point_node));
     }
+
+    Material& material = control_point_nodes_[0]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+    glm::vec3 green_color(0.f, 1.f, 0.f); // green
+    material.SetAmbientColor(green_color);
+    material.SetDiffuseColor(green_color);
+    material.SetSpecularColor(green_color);
 }
 
 void NURBSSurface::PlotSurface(){
@@ -509,7 +580,7 @@ void NURBSSurface::PlotSurface(){
       positions->push_back(p2.P);
       positions->push_back(p3.P);
 
-      std::cout << "tangent  " << p0.T.x << " " << p0.T.y << " " << p0.T.z << std::endl; 
+    //   std::cout << "tangent  " << p0.T.x << " " << p0.T.y << " " << p0.T.z << std::endl; 
 
       normals->push_back(p0.T);
       normals->push_back(p1.T);
@@ -543,6 +614,50 @@ void NURBSSurface::PlotSurface(){
 
 }
 
+
+void NURBSSurface::UpdateSurface(){
+    auto positions = make_unique<PositionArray>();
+  auto normals = make_unique<NormalArray>();
+  auto indices = make_unique<IndexArray>();
+
+  // TODO: fill "positions", "normals", and "indices"
+  float width_triangle = 1.0f / N_SUBDIV_;
+  for (int i = 0; i < N_SUBDIV_; i++) {
+    for (int j = 0; j < N_SUBDIV_; j++) {
+      float left_u = (i + 1) * width_triangle;
+      float left_v = j * width_triangle;
+      NURBSPoint p0 = EvalPatch(left_u, left_v);
+      NURBSPoint p1 = EvalPatch(left_u, left_v + width_triangle);
+      NURBSPoint p2 = EvalPatch(left_u - width_triangle, left_v);
+      NURBSPoint p3 = EvalPatch(left_u - width_triangle, left_v + width_triangle);
+
+      positions->push_back(p0.P);
+      positions->push_back(p1.P);
+      positions->push_back(p2.P);
+      positions->push_back(p3.P);
+
+    //   std::cout << "tangent  " << p0.T.x << " " << p0.T.y << " " << p0.T.z << std::endl; 
+
+      normals->push_back(p0.T);
+      normals->push_back(p1.T);
+      normals->push_back(p2.T);
+      normals->push_back(p3.T);
+
+      int pos_id = (N_SUBDIV_ * i + j) * 4;
+      indices->push_back(pos_id);
+      indices->push_back(pos_id + 1);
+      indices->push_back(pos_id + 2);
+      indices->push_back(pos_id + 2);
+      indices->push_back(pos_id + 1);
+      indices->push_back(pos_id + 3);
+    }
+  }
+
+
+  patch_mesh_->UpdatePositions(std::move(positions));
+  patch_mesh_->UpdateNormals(std::move(normals));
+  patch_mesh_->UpdateIndices(std::move(indices));
+}
 
 
 

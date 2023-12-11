@@ -19,6 +19,7 @@ protected:
 
  private:
   void DrawSplineGUI();
+  void DrawSurfaceGUI();
   void LoadFile(const std::string& filename, SceneNode& root);
   std::vector<float> slider_values_;
   std::vector<float> weights_;
