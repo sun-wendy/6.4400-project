@@ -199,7 +199,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
 void SplineViewerApp::DrawGUI(){
   if (spline_type_ == "NURBS curve"){
     DrawSplineGUI();
-  } else{
+  } else if (spline_type_ == "NURBS surface"){
     DrawSurfaceGUI();
   }
 }
@@ -213,6 +213,8 @@ void SplineViewerApp::DrawSplineGUI() {
   bool circle_button_pushed = false; // adds circle
   bool change_circle_selection = false; // select the circle that you want to move
   bool print_things = false; // prints out curve information in the format of a .spline file
+  bool remove_pt_clamp = false;
+  bool remove_pt_unclamp = false;
 
   // CONTROL PANEL GUI
   ImGui::Begin("Control Panel");
@@ -225,6 +227,8 @@ void SplineViewerApp::DrawSplineGUI() {
   ImGui::PushID((int)1);
   modified |= ImGui::InputFloat("", &weights_[selected_control_pt], 1.0, 1.0);
   ImGui::PopID();
+  remove_pt_clamp |= ImGui::SmallButton("Remove selected control point (Clamp ends)");
+  remove_pt_unclamp |= ImGui::SmallButton("Remove selected control point (Unclamped ends)");
   clamp_ends |= ImGui::SmallButton("Clamp ends");
   unclamp_ends |= ImGui::SmallButton("Unclamp ends");
   // adding new control point
@@ -249,6 +253,25 @@ void SplineViewerApp::DrawSplineGUI() {
   ImGui::Text("Print control points info:");
   print_things |= ImGui::SmallButton("Print info!");
   ImGui::End();
+
+  if (remove_pt_clamp){
+    nurbs_node_ptr_->RemoveControlPoint(selected_control_pt, true);
+    weights_ = nurbs_node_ptr_->GetWeights();
+    control_points = nurbs_node_ptr_->GetControlPointsLocations();
+    if (selected_control_pt == weights_.size()){
+      selected_control_pt = weights_.size()-1;
+    }
+    
+  }
+  if (remove_pt_unclamp){
+    nurbs_node_ptr_->RemoveControlPoint(selected_control_pt, false);
+    weights_ = nurbs_node_ptr_->GetWeights();
+    control_points = nurbs_node_ptr_->GetControlPointsLocations();
+    if (selected_control_pt == weights_.size()){
+      selected_control_pt = weights_.size()-1;
+    }
+    
+  }
 
   if (change_control_pt_selection){ // change which control point is selected
     nurbs_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);

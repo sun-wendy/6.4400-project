@@ -38,6 +38,8 @@ class NURBSNode : public SceneNode {
     std::vector<float> CalcKnotVector(bool clamped_ends, bool adding_new_point);
     std::vector<float> GetKnotVector();
     int GetDegree();
+    std::vector<float> CalcKnotVector2(int degree, float knots_size, bool clamped_ends);
+    void RemoveControlPoint(int index, bool clamped_ends);
     
     // void ChangeControlPointLocation(char key);
 
