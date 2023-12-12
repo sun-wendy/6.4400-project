@@ -6,6 +6,7 @@
 #include "gloo/cameras/ArcBallCameraNode.hpp"
 #include "gloo/lights/AmbientLight.hpp"
 #include "gloo/lights/PointLight.hpp"
+#include "gloo/lights/DirectionalLight.hpp"
 #include "gloo/components/LightComponent.hpp"
 
 #include "CurveNode.hpp"
@@ -47,6 +48,15 @@ void SplineViewerApp::SetupScene() {
   point_light_node->CreateComponent<LightComponent>(point_light);
   point_light_node->GetTransform().SetPosition(glm::vec3(0.0f, 4.0f, 5.f));
   root.AddChild(std::move(point_light_node));
+
+  auto point_light2 = std::make_shared<DirectionalLight>();
+  point_light->SetDiffuseColor(glm::vec3(0.2f, 0.9f, 0.9f));
+  point_light2->SetSpecularColor(glm::vec3(1.0f, 1.0f, 1.0f));
+  point_light2->SetDirection(glm::vec3(-1.0f, 0.0, 0.0));
+  auto point_light_node2 = make_unique<SceneNode>();
+  point_light_node2->CreateComponent<LightComponent>(point_light2);
+  point_light_node2->GetTransform().SetPosition(glm::vec3(1.0f, -1.0f, 0.f));
+  root.AddChild(std::move(point_light_node2));
 }
 
 void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
@@ -105,7 +115,7 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
     auto nurbs_node = make_unique<NURBSNode>(degree, control_points, weights_, knots, NURBSBasis::NURBS, 'R', true);
     nurbs_node_ptr_ = nurbs_node.get();
     root.AddChild(std::move(nurbs_node));
-  } else{
+  } else if (spline_type_ == "NURBS surface"){
       int degreeU;
       int degreeV;
       int numRows; // num rows
@@ -183,12 +193,118 @@ void SplineViewerApp::LoadFile(const std::string& filename, SceneNode& root) {
     auto surface_node = make_unique<NURBSSurface>(numRows, numCols, control_points, weights_, knotsU, knotsV, degreeU, degreeV);
     surface_node_ptr_ = surface_node.get();
     root.AddChild(std::move(surface_node));
+  } else{ // MUSIC!
+    // display the clef things
+    std::vector<std::string> notes;
+    std::string line;
+    while (std::getline(fs, line)){
+          std::getline(fs, line);
+          std::stringstream ss(line);
+          std::string note;
+          while (ss >> note) {
+            notes.push_back(note);
+          }
+     }
+    // std::cout << "Notes: " << std::endl;
+    // for (size_t i = 0; i < notes.size(); i++) {
+    //   std::cout << notes[i] << ' ';
+    // }
+    // std::cout << std::endl;
+
+    std::vector<float> clef_knots = {0.0, 0.0, 1.0, 1.0};
+    int clef_degree = 1;
+    std::vector<float> clef_weights = {1.0,1.0};
+    std::vector<glm::vec3> F_line = {glm::vec3(-10.0,2.0,0.0), glm::vec3(20,2.0,0.0)};
+    std::vector<glm::vec3> D_line = {glm::vec3(-10.0,1.0,0.0), glm::vec3(20,1.0,0.0)};
+    std::vector<glm::vec3> B_line = {glm::vec3(-10.0,0.0,0.0), glm::vec3(20,0.0,0.0)};
+    std::vector<glm::vec3> G_line = {glm::vec3(-10.0,-1.0,0.0), glm::vec3(20,-1.0,0.0)};
+    std::vector<glm::vec3> E_line = {glm::vec3(-10.0,-2.0,0.0), glm::vec3(20,-2.0,0.0)};
+    auto F_node = make_unique<NURBSNode>(clef_degree, F_line, clef_weights, clef_knots, NURBSBasis::NURBS, 'R', false);
+    auto D_node = make_unique<NURBSNode>(clef_degree, D_line, clef_weights, clef_knots, NURBSBasis::NURBS, 'R', false);
+    auto B_node = make_unique<NURBSNode>(clef_degree, B_line, clef_weights, clef_knots, NURBSBasis::NURBS, 'R', false);
+    auto G_node = make_unique<NURBSNode>(clef_degree, G_line, clef_weights, clef_knots, NURBSBasis::NURBS, 'R', false);
+    auto E_node = make_unique<NURBSNode>(clef_degree, E_line, clef_weights, clef_knots, NURBSBasis::NURBS, 'R', false);
+    root.AddChild(std::move(F_node));
+    root.AddChild(std::move(D_node));
+    root.AddChild(std::move(B_node));
+    root.AddChild(std::move(G_node));
+    root.AddChild(std::move(E_node));
+
+    std::vector<float> note_weights = {1.0,1.0,1.0,1.0,1.0,1.0};
+    std::vector<float> note_knots = {0.0, 0.0, 0.0, 0.0, 0.444444, 0.555556, 1.0, 1.0, 1.0, 1.0};
+    std::vector<glm::vec3> up_note = {glm::vec3(0.5, 2.95, 0.0), glm::vec3(0.65, 0.5, 0.0), glm::vec3(0.900001, -0.6, 0.0), glm::vec3(-1.15, -0.25, 0.0), glm::vec3(-0.15, 0.7, 0.0), glm::vec3(0.6, 0.1, 0.0)};
+    std::vector<glm::vec3> down_note = {glm::vec3(-0.5, -2.65, 0.0), glm::vec3(-0.55, -1.05, 0.0), glm::vec3(-0.849999 ,0.75, 0.0), glm::vec3(1.0, 0.0499999, 0.0), glm::vec3(0.1, -0.55, 0.0), glm::vec3(-0.6, -0.2, 0.0)};
+    int note_degree = 3;
+    //auto up_note_node = make_unique<NURBSNode>(note_degree, up_note, note_weights, note_knots, NURBSBasis::NURBS, 'R', false);
+    //auto down_note_node = make_unique<NURBSNode>(note_degree, down_note, note_weights, note_knots, NURBSBasis::NURBS, 'R', false);
+    for (int i = 0; i < notes.size(); i++){
+      std::vector<glm::vec3> note_points;
+      if(notes[i] == "D4"){
+        for (glm::vec3 default_pos : up_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, -2.5, 0.0));
+        }
+      }    
+      if(notes[i] == "E4"){
+        for (glm::vec3 default_pos : up_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, -2.0, 0.0));
+        }
+      }      
+      if(notes[i] == "F4"){
+        for (glm::vec3 default_pos : up_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, -1.5, 0.0));
+        }
+      }
+      if(notes[i] == "G4"){
+        for (glm::vec3 default_pos : up_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, -1.0, 0.0));
+        }
+      }
+      if(notes[i] == "A4"){
+        for (glm::vec3 default_pos : up_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, -0.5, 0.0));
+        }
+      }
+      if(notes[i] == "B4"){
+        for (glm::vec3 default_pos : down_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, 0.0, 0.0));
+        }
+      }
+      if(notes[i] == "C5"){
+        for (glm::vec3 default_pos : down_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, 0.5, 0.0));
+        }
+      }
+      if(notes[i] == "D5"){
+        for (glm::vec3 default_pos : down_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, 1.0, 0.0));
+        }
+      }
+      if(notes[i] == "E5"){
+        for (glm::vec3 default_pos : down_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, 1.5, 0.0));
+        }
+      }  
+      if(notes[i] == "F5"){
+        for (glm::vec3 default_pos : down_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, 2.0, 0.0));
+        }
+      }
+      if(notes[i] == "G5"){
+        for (glm::vec3 default_pos : down_note){
+          note_points.push_back(default_pos + glm::vec3(-9.0 + i * 2.0, 2.5, 0.0));
+        }
+      }                                  
+      auto note_node = make_unique<NURBSNode>(note_degree, note_points, note_weights, note_knots, NURBSBasis::NURBS, 'R', false);
+      root.AddChild(std::move(note_node));
+    }
   }
 
 }
 void SplineViewerApp::DrawGUI(){
   if (spline_type_ == "NURBS curve"){
     DrawSplineGUI();
+  } else if (spline_type_ == "NURBS surface"){
+    DrawSurfaceGUI();
   }
 }
 void SplineViewerApp::DrawSplineGUI() {
@@ -201,6 +317,8 @@ void SplineViewerApp::DrawSplineGUI() {
   bool circle_button_pushed = false; // adds circle
   bool change_circle_selection = false; // select the circle that you want to move
   bool print_things = false; // prints out curve information in the format of a .spline file
+  bool remove_pt_clamp = false;
+  bool remove_pt_unclamp = false;
 
   // CONTROL PANEL GUI
   ImGui::Begin("Control Panel");
@@ -213,6 +331,8 @@ void SplineViewerApp::DrawSplineGUI() {
   ImGui::PushID((int)1);
   modified |= ImGui::InputFloat("", &weights_[selected_control_pt], 1.0, 1.0);
   ImGui::PopID();
+  remove_pt_clamp |= ImGui::SmallButton("Remove selected control point (Clamp ends)");
+  remove_pt_unclamp |= ImGui::SmallButton("Remove selected control point (Unclamped ends)");
   clamp_ends |= ImGui::SmallButton("Clamp ends");
   unclamp_ends |= ImGui::SmallButton("Unclamp ends");
   // adding new control point
@@ -237,6 +357,25 @@ void SplineViewerApp::DrawSplineGUI() {
   ImGui::Text("Print control points info:");
   print_things |= ImGui::SmallButton("Print info!");
   ImGui::End();
+
+  if (remove_pt_clamp){
+    nurbs_node_ptr_->RemoveControlPoint(selected_control_pt, true);
+    weights_ = nurbs_node_ptr_->GetWeights();
+    control_points = nurbs_node_ptr_->GetControlPointsLocations();
+    if (selected_control_pt == weights_.size()){
+      selected_control_pt = weights_.size()-1;
+    }
+    
+  }
+  if (remove_pt_unclamp){
+    nurbs_node_ptr_->RemoveControlPoint(selected_control_pt, false);
+    weights_ = nurbs_node_ptr_->GetWeights();
+    control_points = nurbs_node_ptr_->GetControlPointsLocations();
+    if (selected_control_pt == weights_.size()){
+      selected_control_pt = weights_.size()-1;
+    }
+    
+  }
 
   if (change_control_pt_selection){ // change which control point is selected
     nurbs_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);
@@ -302,5 +441,47 @@ void SplineViewerApp::DrawSplineGUI() {
     std::cout << nurbs_node_ptr_->GetDegree() << std::endl;
   }
 }
+
+void SplineViewerApp::DrawSurfaceGUI() {
+  bool change_control_pt_selection = false; // change which control point is selected
+  bool modified = false; // change the selected control point's location
+  bool print_things = false;
+
+  // CONTROL PANEL GUI
+  ImGui::Begin("Control Panel");
+  // editing existing control points
+  ImGui::Text("Selected control point:");
+  ImGui::PushID((int)0);
+  change_control_pt_selection |= ImGui::SliderInt("", &selected_control_pt, 0, control_points.size()-1);
+  ImGui::PopID();
+  ImGui::Text("Weight of selected control point:");
+  ImGui::PushID((int)1);
+  modified |= ImGui::InputFloat("", &weights_[selected_control_pt], 1.0, 1.0);
+  ImGui::PopID();
+  ImGui::Text("");
+  ImGui::Text("Print control points info:");
+  print_things |= ImGui::SmallButton("Print info!");
+  ImGui::End();
+
+  if (change_control_pt_selection){ // change which control point is selected
+    surface_node_ptr_->ChangeSelectedControlPoint(selected_control_pt);
+  }
+
+  if (modified) { // change the selected control point's location
+    surface_node_ptr_->OnWeightChanged(weights_);
+  }
+
+  if (print_things){ // prints out curve information in the format of a .spline file
+    std::cout << "NURBS surface" << std::endl;
+    std::vector<glm::vec3> control_points_locations = surface_node_ptr_->GetControlPointsLocations();
+    std::vector<float> control_points_weights = surface_node_ptr_->GetWeights();
+    std::cout << "control points" << std::endl;
+    for (size_t i = 0; i < control_points_locations.size(); i++) {
+      std::cout << control_points_locations[i].x << " " << control_points_locations[i].y << " " << control_points_locations[i].z << " " << control_points_weights[i] << std::endl;
+    }
+  }
+}
+
+
 }  // namespace GLOO
 

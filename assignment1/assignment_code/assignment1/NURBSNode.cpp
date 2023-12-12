@@ -132,6 +132,24 @@ std::vector<float> NURBSNode::CalcKnotVector(bool clamped_ends, bool adding_new_
     return knots_;
 }
 
+std::vector<float> NURBSNode::CalcKnotVector2(int degree, float knots_size, bool clamped_ends){
+    float n = knots_size;
+    std::vector<float> new_knots;
+    new_knots.push_back(0);
+    for (int i = 1; i <= n; i++){
+        new_knots.push_back(i/n);
+    }
+
+    if (clamped_ends){ // if the ends are clamped, the curve goes through the first and last control points
+        for (int i = 0; i <= degree; i++){
+            new_knots[i] = 0.0;
+            new_knots[n-i] = 1.0;
+        }
+    }
+
+    return new_knots;
+}
+
 // Evaluates the curve at time t. In many textbooks, the variable "u" is used instead.
 NURBSPoint NURBSNode::EvalCurve(float t) { 
     NURBSPoint curve_point;
@@ -233,6 +251,40 @@ void NURBSNode::PlotControlPoints() {
         control_point_nodes_[i]->GetTransform().SetPosition(control_pts_[i]);
     }
 }
+
+void NURBSNode::RemoveControlPoint(int index, bool clamped_ends){
+    if (control_pts_.size() == degree_ + 1){
+        // do nothing
+    } else {
+        // std::cout << "HELLOOO " << std::endl; 
+        control_point_nodes_[index]->SetActive(false);
+        auto it1 = control_point_nodes_.begin() + index;
+        control_point_nodes_.erase(it1);
+        auto it2 = control_pts_.begin() + index;
+        control_pts_.erase(it2);
+        auto it3 = weights_.begin() + index;
+        weights_.erase(it3);
+
+        // control_point_nodes_[index]->SetActive(false);
+
+        knots_ = CalcKnotVector2(degree_, knots_.size(), clamped_ends);
+
+        if (selected_control_point_ == weights_.size()){
+            selected_control_point_ = weights_.size()-1;
+        }
+
+        PlotControlPoints();
+        PlotCurve();
+        
+        Material& material2 = control_point_nodes_[selected_control_point_]->GetComponentPtr<MaterialComponent>()->GetMaterial();
+        glm::vec3 green_color(0.f, 1.f, 0.f); // green
+        material2.SetAmbientColor(green_color);
+        material2.SetDiffuseColor(green_color);
+        material2.SetSpecularColor(green_color);
+    }
+}
+
+
 
 void NURBSNode::ChangeEditStatus(bool curve_being_edited){
     curve_being_edited_ = curve_being_edited;
