@@ -24,7 +24,7 @@ class NURBSNode : public SceneNode {
     void ChangeSelectedControlPoint(int new_selected_control_point);
     void Update(double delta_time) override;
     NURBSPoint EvalCurve(float t);
-    void InitCurveAndControlPoints();
+    // void InitCurveAndControlPoints();
     // void InitCurve();
     void PlotCurve();
     void PlotControlPoints();
@@ -45,7 +45,7 @@ class NURBSNode : public SceneNode {
 
  private:
     // NURBSPoint EvalCurve(float t);
-    // void InitCurveAndControlPoints();
+    void InitCurveAndControlPoints();
     // void InitCurve();
     // void PlotCurve();
     // void PlotControlPoints();
